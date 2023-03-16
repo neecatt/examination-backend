@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { CreateTeacherDto } from './dto/create-teacher.dto';
 import { UpdateTeacherDto } from './dto/update-teacher.dto';
@@ -18,6 +18,17 @@ export class TeacherService {
     const subjectIdArray = createTeacherDto.subjectIds.map((id) => {
       return { Subject: { connect: { id } } };
     });
+
+    //throw exception if teacher email already exists
+    const teacher = await this.prisma.teacher.findUnique({
+      where: {
+        email: createTeacherDto.email,
+      },
+    });
+    if (teacher) {
+      throw new BadRequestException('Teacher email already exists');
+    }
+
     return await this.prisma.teacher.create({
       data: {
         Subjects: {
@@ -28,19 +39,56 @@ export class TeacherService {
     });
   }
 
-  findAll() {
-    return `This action returns all teacher`;
+  async findAll() {
+    return await this.prisma.teacher.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} teacher`;
+  async findOne(id: number) {
+    return await this.prisma.teacher.findUnique({
+      where: {
+        id,
+      },
+    });
   }
 
   update(id: number, updateTeacherDto: UpdateTeacherDto) {
-    return `This action updates a #${id} teacher`;
+    return this.prisma.teacher.update({
+      where: {
+        id,
+      },
+      data: updateTeacherDto,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} teacher`;
+  async remove(id: number) {
+    const teacher = await this.prisma.teacher.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        Subjects: true,
+      },
+    });
+
+    const subjectIds = teacher.Subjects.map((subject) => subject.subjectId);
+
+    for (const id of subjectIds) {
+      await this.prisma.teacherOnSubjects.deleteMany({
+        where: {
+          subjectId: id,
+        },
+      });
+      await this.prisma.subject.delete({
+        where: {
+          id,
+        },
+      });
+    }
+
+    return this.prisma.teacher.delete({
+      where: {
+        id,
+      },
+    });
   }
 }

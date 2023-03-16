@@ -10,6 +10,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+//One to many with unigroup
 model Student {
   id         Int      @id @default(autoincrement())
   email      String   @unique
@@ -21,6 +22,7 @@ model Student {
   uniGroupId Int
 }
 
+//many to many with subjects
 model Teacher {
   id        Int                 @id @default(autoincrement())
   name      String
@@ -31,6 +33,7 @@ model Teacher {
   Subjects  TeacherOnSubjects[]
 }
 
+//mediator table
 model TeacherOnSubjects {
   Teacher   Teacher @relation(fields: [teacherId], references: [id])
   teacherId Int
@@ -40,6 +43,8 @@ model TeacherOnSubjects {
   @@id([teacherId, subjectId])
 }
 
+//many to many with teacher
+//many to one with unigroup
 model Subject {
   id                Int                 @id @default(autoincrement())
   name              String
@@ -49,8 +54,11 @@ model Subject {
   UniGroup          UniGroup?           @relation(fields: [uniGroupId], references: [id])
   uniGroupId        Int?
   TeacherOnSubjects TeacherOnSubjects[]
+  credits           Float
 }
 
+//many to one with subject
+//one to many with answer
 model Question {
   id        Int      @id @default(autoincrement())
   question  String
@@ -58,23 +66,19 @@ model Question {
   subject   Subject  @relation(fields: [subjectId], references: [id])
   subjectId Int
   Answer    Answer[]
+  createdAt DateTime @default(now())
 }
 
+//one to many with student
+//one to many with subject
 model UniGroup {
-  id        Int       @id @default(autoincrement())
-  name      String
-  students  Student[]
-  subjects  Subject[]
-  Faculty   Faculty?  @relation(fields: [facultyId], references: [id])
-  facultyId Int?
+  id       Int       @id @default(autoincrement())
+  name     String
+  students Student[]
+  subjects Subject[]
 }
 
-model Faculty {
-  id          Int        @id @default(autoincrement())
-  name        String
-  description String
-  uniGroup    UniGroup[]
-}
+//one to many with question
 
 model Answer {
   id         Int      @id @default(autoincrement())
