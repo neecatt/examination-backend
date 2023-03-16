@@ -10,62 +10,45 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id         Int        @id @default(autoincrement())
-  email      String     @unique
-  password   String
-  username   String     @unique
-  name       String?
-  surname    String?
-  userStatus UserStatus
-  is_student Boolean
-  is_teacher Boolean
-  Student    Student?   @relation(fields: [studentId], references: [id])
-  studentId  Int?
-  Teacher    Teacher?   @relation(fields: [teacherId], references: [id])
-  teacherId  Int?
-}
-
 model Student {
-  id         Int        @id @default(autoincrement())
-  email      String     @unique
+  id         Int      @id @default(autoincrement())
+  email      String   @unique
   password   String
-  username   String     @unique
+  username   String   @unique
   name       String?
   surname    String?
-  userStatus UserStatus
-  UniGroup   UniGroup   @relation(fields: [uniGroupId], references: [id])
+  UniGroup   UniGroup @relation(fields: [uniGroupId], references: [id])
   uniGroupId Int
-  User       User[]
-}
-
-enum UserStatus {
-  ACTIVE
-  INACTIVE
-  DELETED
 }
 
 model Teacher {
-  id         Int        @id @default(autoincrement())
-  name       String
-  surname    String
-  email      String     @unique
-  password   String
-  subjects   Subject    @relation(fields: [subjectId], references: [id])
-  subjectId  Int
-  userStatus UserStatus
-  User       User[]
+  id        Int                 @id @default(autoincrement())
+  name      String
+  surname   String
+  email     String              @unique
+  password  String
+  is_active Boolean
+  Subjects  TeacherOnSubjects[]
+}
+
+model TeacherOnSubjects {
+  Teacher   Teacher @relation(fields: [teacherId], references: [id])
+  teacherId Int
+  Subject   Subject @relation(fields: [subjectId], references: [id])
+  subjectId Int
+
+  @@id([teacherId, subjectId])
 }
 
 model Subject {
-  id          Int        @id @default(autoincrement())
-  name        String
-  description String
-  credit      Int
-  teachers    Teacher[]
-  questions   Question[]
-  UniGroup    UniGroup?  @relation(fields: [uniGroupId], references: [id])
-  uniGroupId  Int?
+  id                Int                 @id @default(autoincrement())
+  name              String
+  description       String
+  credit            Float
+  questions         Question[]
+  UniGroup          UniGroup?           @relation(fields: [uniGroupId], references: [id])
+  uniGroupId        Int?
+  TeacherOnSubjects TeacherOnSubjects[]
 }
 
 model Question {
