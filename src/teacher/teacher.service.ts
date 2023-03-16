@@ -70,20 +70,11 @@ export class TeacherService {
       },
     });
 
-    const subjectIds = teacher.Subjects.map((subject) => subject.subjectId);
-
-    for (const id of subjectIds) {
-      await this.prisma.teacherOnSubjects.deleteMany({
-        where: {
-          subjectId: id,
-        },
-      });
-      await this.prisma.subject.delete({
-        where: {
-          id,
-        },
-      });
-    }
+    await this.prisma.teacherOnSubjects.deleteMany({
+      where: {
+        teacherId: id,
+      },
+    });
 
     return this.prisma.teacher.delete({
       where: {
