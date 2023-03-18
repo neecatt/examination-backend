@@ -1,10 +1,13 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { User } from 'src/users/entities/user.entity';
 import { PrismaService } from 'src/prisma.service';
 import { Teacher } from '@prisma/client';
 
@@ -19,11 +22,11 @@ export class AuthService {
       },
     });
     if (!teacher) {
-      return null;
+      throw new BadRequestException('Teacher email does not exist');
     }
     const isPasswordValid = await bcrypt.compare(password, teacher.password);
     if (!isPasswordValid) {
-      return null;
+      throw new UnauthorizedException('Invalid password');
     }
     return teacher;
   }

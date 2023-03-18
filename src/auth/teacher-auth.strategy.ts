@@ -21,7 +21,7 @@ export class TeacherAuthStrategy extends PassportStrategy(Strategy, 'teacher') {
       payload.password,
     );
     if (!teacher) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('Invalid credentials');
     }
     return teacher;
   }

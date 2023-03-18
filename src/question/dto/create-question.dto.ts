@@ -1,29 +1,25 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateQuestionDto {
   @IsString()
-  email: string;
-
-  @IsString()
-  password: string;
-
   @IsNotEmpty()
-  @IsString()
-  name: string;
+  question: string;
 
+  @IsNumber()
   @IsNotEmpty()
-  @IsString()
-  surname: string;
+  answerId: number;
 
+  @IsNumber()
   @IsNotEmpty()
-  @IsString()
-  unigroup: string;
+  subjectId: number;
 
-  @IsNotEmpty()
   @IsString()
-  username: string;
-
-  @IsNotEmpty()
-  @IsString()
-  subject: string;
+  @IsOptional()
+  options: {
+    OptionA: string;
+    OptionB: string;
+    OptionC: string;
+    OptionD: string;
+    OptionE: string;
+  };
 }

@@ -49,7 +49,7 @@ model Subject {
   id                Int                 @id @default(autoincrement())
   name              String
   description       String
-  credit            Float
+  credit            Int
   questions         Question[]
   UniGroup          UniGroup?           @relation(fields: [uniGroupId], references: [id])
   uniGroupId        Int?
@@ -58,18 +58,22 @@ model Subject {
 }
 
 //many to one with subject
-//one to many with answer
+//one to one with answer
 model Question {
   id        Int      @id @default(autoincrement())
   question  String
-  answer    String
+  OptionA   String?
+  OptionB   String?
+  OptionC   String?
+  OptionD   String?
+  OptionE   String?
   subject   Subject  @relation(fields: [subjectId], references: [id])
   subjectId Int
-  Answer    Answer[]
   createdAt DateTime @default(now())
+  answer    String?
 }
 
-//one to many with student
+//one to one with student
 //one to many with subject
 model UniGroup {
   id       Int       @id @default(autoincrement())
@@ -78,12 +82,8 @@ model UniGroup {
   subjects Subject[]
 }
 
-//one to many with question
-
 model Answer {
-  id         Int      @id @default(autoincrement())
+  id         Int     @id @default(autoincrement())
   answer     String
   is_correct Boolean
-  question   Question @relation(fields: [questionId], references: [id])
-  questionId Int
 }
