@@ -6,10 +6,14 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { TeacherService } from './teacher.service';
 import { CreateTeacherDto } from './dto/create-teacher.dto';
 import { UpdateTeacherDto } from './dto/update-teacher.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth-guard';
+import { GetTeacher } from 'src/auth/decorators/get-teacher.decorator';
+import { Teacher } from '@prisma/client';
 
 @Controller('teacher')
 export class TeacherController {
@@ -25,7 +29,13 @@ export class TeacherController {
     return this.teacherService.findAll();
   }
 
-  @Get(':id')
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  getTeacherInfo(@GetTeacher() teacher: Teacher): Teacher {
+    return teacher;
+  }
+
+  @Get('/:id')
   findOne(@Param('id') id: string) {
     return this.teacherService.findOne(+id);
   }

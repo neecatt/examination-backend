@@ -3,6 +3,7 @@ import { PrismaService } from 'src/prisma.service';
 import { CreateTeacherDto } from './dto/create-teacher.dto';
 import { UpdateTeacherDto } from './dto/update-teacher.dto';
 import * as bcrypt from 'bcrypt';
+import { Teacher } from '@prisma/client';
 
 @Injectable()
 export class TeacherService {
@@ -44,11 +45,28 @@ export class TeacherService {
   }
 
   async findOne(id: number) {
+    // if (!Number.isInteger(id)) {
+    //   throw new Error(
+    //     `Invalid id parameter: ${id}. Expected an integer value.`,
+    //   );
+    // }
     return await this.prisma.teacher.findUnique({
       where: {
         id,
       },
     });
+  }
+
+  async findOneByEmail(email: string) {
+    return await this.prisma.teacher.findUnique({
+      where: {
+        email,
+      },
+    });
+  }
+
+  async getTeacherInfo(teacher: Teacher) {
+    return await this.findOneByEmail(teacher.email);
   }
 
   update(id: number, updateTeacherDto: UpdateTeacherDto) {

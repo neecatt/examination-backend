@@ -9,27 +9,28 @@ import { QuestionModule } from './question/question.module';
 import { SubjectModule } from './subject/subject.module';
 import { Passport } from 'passport';
 import { PassportModule } from '@nestjs/passport';
-import { JwtModule } from '@nestjs/jwt';
-import { TeacherAuthStrategy } from './auth/teacher-auth.strategy';
+import { JwtModule, JwtService } from '@nestjs/jwt';
 import { AuthService } from './auth/auth.service';
 import { PrismaService } from './prisma.service';
+import { TeacherService } from './teacher/teacher.service';
 
 @Module({
   imports: [
     AuthModule,
-    UsersModule,
     TeacherModule,
     StudentModule,
     QuestionModule,
     SubjectModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
-    JwtModule.register({
-      secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '1d' },
-    }),
   ],
   controllers: [AppController],
-  providers: [AppService, TeacherAuthStrategy, AuthService, PrismaService],
-  exports: [TeacherAuthStrategy, AuthService, PrismaService],
+  providers: [
+    AppService,
+    AuthService,
+    PrismaService,
+    TeacherService,
+    JwtService,
+  ],
+  exports: [AuthService, PrismaService],
 })
 export class AppModule {}

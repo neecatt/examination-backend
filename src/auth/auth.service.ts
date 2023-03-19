@@ -1,40 +1,40 @@
-import {
-  BadRequestException,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
-import { UsersService } from 'src/users/users.service';
+import { ForbiddenException, Injectable } from '@nestjs/common';
+import { TeacherService } from 'src/teacher/teacher.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { PrismaService } from 'src/prisma.service';
-import { Teacher } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
-  constructor(private jwtService: JwtService, private prisma: PrismaService) {}
+  constructor(
+    private readonly teacherService: TeacherService,
+    private readonly jwtService: JwtService,
+  ) {}
 
-  async validateTeacher(email: string, password: string): Promise<Teacher> {
-    const teacher = await this.prisma.teacher.findUnique({
-      where: {
-        email: email,
-      },
-    });
-    if (!teacher) {
-      throw new BadRequestException('Teacher email does not exist');
-    }
-    const isPasswordValid = await bcrypt.compare(password, teacher.password);
-    if (!isPasswordValid) {
-      throw new UnauthorizedException('Invalid password');
-    }
-    return teacher;
-  }
+  async login(createAuthDto: CreateAuthDto) {
+    try {
+      const teacher = await this.teacherService.findOneByEmail(
+        createAuthDto.email,
+      );
 
-  async login(teacher: Teacher) {
-    const payload = { email: teacher.email, sub: teacher.id };
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
+      const isPasswordValid = await bcrypt.compare(
+        createAuthDto.password,
+        teacher.password,
+      );
+
+      if (!isPasswordValid) {
+        throw new ForbiddenException('Password is not correct!');
+      }
+
+      return {
+        access_token: this.jwtService.sign({
+          email: teacher.email,
+          sub: teacher.id,
+        }),
+      };
+    } catch (error) {
+      throw error;
+    }
   }
 }
