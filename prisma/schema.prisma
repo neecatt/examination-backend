@@ -16,7 +16,7 @@ model Student {
   id         Int      @id @default(autoincrement())
   name       String
   surname    String
-  unigroup   Unigroup @relation(fields: [unigroupId], references: [id])
+  unigroup   UniGroup @relation(fields: [unigroupId], references: [id])
   unigroupId Int
 }
 
@@ -56,7 +56,7 @@ model Subject {
 model SubjectOnUnigroups {
   Subject    Subject  @relation(fields: [subjectId], references: [id])
   subjectId  Int
-  Unigroup   Unigroup @relation(fields: [unigroupId], references: [id])
+  UniGroup   UniGroup @relation(fields: [unigroupId], references: [id])
   unigroupId Int
 
   @@id([subjectId, unigroupId])
@@ -80,7 +80,7 @@ model Question {
 
 //one to one with student
 //one to many with subject
-model Unigroup {
+model UniGroup {
   id                 Int                  @id @default(autoincrement())
   name               String
   students           Student[]
