@@ -80,7 +80,7 @@ model Question {
 
 //one to one with student
 //one to many with subject
-model UniGroup {
+model Unigroup {
   id                 Int                  @id @default(autoincrement())
   name               String
   students           Student[]
