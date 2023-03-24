@@ -45,11 +45,6 @@ export class TeacherService {
   }
 
   async findOne(id: number) {
-    // if (!Number.isInteger(id)) {
-    //   throw new Error(
-    //     `Invalid id parameter: ${id}. Expected an integer value.`,
-    //   );
-    // }
     return await this.prisma.teacher.findUnique({
       where: {
         id,
