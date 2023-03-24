@@ -50,7 +50,7 @@ model Subject {
   credit      Int
   Questions   Question[]
   Teachers    TeacherOnSubjects[]
-  Subjects    SubjectOnUnigroups[]
+  Unigroups   SubjectOnUnigroups[]
 }
 
 model SubjectOnUnigroups {
