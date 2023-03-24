@@ -11,6 +11,7 @@ import { JwtService } from '@nestjs/jwt';
 import { AuthService } from './auth/auth.service';
 import { PrismaService } from './prisma.service';
 import { TeacherService } from './teacher/teacher.service';
+import { UnigroupModule } from './unigroup/unigroup.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { TeacherService } from './teacher/teacher.service';
     QuestionModule,
     SubjectModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
+    UnigroupModule,
   ],
   controllers: [AppController],
   providers: [

@@ -11,15 +11,13 @@ datasource db {
 }
 
 //One to many with unigroup
+//Later will be added quizid and result
 model Student {
   id         Int      @id @default(autoincrement())
-  email      String   @unique
-  password   String
-  username   String   @unique
-  name       String?
-  surname    String?
-  UniGroup   UniGroup @relation(fields: [uniGroupId], references: [id])
-  uniGroupId Int
+  name       String
+  surname    String
+  unigroup   UniGroup @relation(fields: [unigroupId], references: [id])
+  unigroupId Int
 }
 
 //many to many with subjects
