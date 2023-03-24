@@ -6,7 +6,7 @@ export class CreateQuestionDto {
   question: string;
 
   @IsNumber()
-  @IsNotEmpty()
+  @IsOptional()
   answerId: number;
 
   @IsNumber()
