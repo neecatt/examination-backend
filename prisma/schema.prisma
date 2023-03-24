@@ -49,8 +49,6 @@ model Subject {
   description        String
   credit             Int
   questions          Question[]
-  UniGroup           UniGroup?            @relation(fields: [uniGroupId], references: [id])
-  uniGroupId         Int?
   TeacherOnSubjects  TeacherOnSubjects[]
   SubjectOnUnigroups SubjectOnUnigroups[]
 }
@@ -86,7 +84,6 @@ model UniGroup {
   id                 Int                  @id @default(autoincrement())
   name               String
   students           Student[]
-  subjects           Subject[]
   SubjectOnUnigroups SubjectOnUnigroups[]
 }
 
