@@ -44,14 +44,24 @@ model TeacherOnSubjects {
 //many to many with teacher
 //many to one with unigroup
 model Subject {
-  id                Int                 @id @default(autoincrement())
-  name              String
-  description       String
-  credit            Int
-  questions         Question[]
-  UniGroup          UniGroup?           @relation(fields: [uniGroupId], references: [id])
-  uniGroupId        Int?
-  TeacherOnSubjects TeacherOnSubjects[]
+  id                 Int                  @id @default(autoincrement())
+  name               String
+  description        String
+  credit             Int
+  questions          Question[]
+  UniGroup           UniGroup?            @relation(fields: [uniGroupId], references: [id])
+  uniGroupId         Int?
+  TeacherOnSubjects  TeacherOnSubjects[]
+  SubjectOnUnigroups SubjectOnUnigroups[]
+}
+
+model SubjectOnUnigroups {
+  Subject    Subject  @relation(fields: [subjectId], references: [id])
+  subjectId  Int
+  UniGroup   UniGroup @relation(fields: [unigroupId], references: [id])
+  unigroupId Int
+
+  @@id([subjectId, unigroupId])
 }
 
 //many to one with subject
@@ -73,10 +83,11 @@ model Question {
 //one to one with student
 //one to many with subject
 model UniGroup {
-  id       Int       @id @default(autoincrement())
-  name     String
-  students Student[]
-  subjects Subject[]
+  id                 Int                  @id @default(autoincrement())
+  name               String
+  students           Student[]
+  subjects           Subject[]
+  SubjectOnUnigroups SubjectOnUnigroups[]
 }
 
 model Answer {
