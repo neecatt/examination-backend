@@ -52,7 +52,6 @@ model Subject {
   UniGroup          UniGroup?           @relation(fields: [uniGroupId], references: [id])
   uniGroupId        Int?
   TeacherOnSubjects TeacherOnSubjects[]
-  credits           Float
 }
 
 //many to one with subject
