@@ -11,11 +11,14 @@ export class CreateSubjectDto {
   credit: number;
 
   @IsOptional()
+  @IsNumber({}, { each: true })
   teacherIds: number[];
 
   @IsOptional()
+  @IsNumber({}, { each: true })
   unigroupIds: number[];
 
   @IsOptional()
-  questionIds: number[];
+  @IsNumber({}, { each: true })
+  questionIds?: number[];
 }

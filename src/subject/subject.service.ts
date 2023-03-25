@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { connect } from 'http2';
 import { PrismaService } from 'src/prisma.service';
 import { CreateSubjectDto } from './dto/create-subject.dto';
 import { UpdateSubjectDto } from './dto/update-subject.dto';
@@ -6,32 +7,37 @@ import { UpdateSubjectDto } from './dto/update-subject.dto';
 @Injectable()
 export class SubjectService {
   constructor(private readonly prisma: PrismaService) {}
-  create(createSubjectDto: CreateSubjectDto) {
+  async create(createSubjectDto: CreateSubjectDto) {
     const { teacherIds, unigroupIds, questionIds, ...subjectData } =
       createSubjectDto;
-    const teacherIdArray = createSubjectDto.teacherIds.map((id) => {
-      return { Teacher: { connect: { id } } };
-    });
-    const unigroupIdArray = createSubjectDto.unigroupIds.map((id) => {
-      return { UniGroup: { connect: { id } } };
-    });
-    const questionIdArray = createSubjectDto.questionIds.map((id) => {
-      return { id };
-    });
+    let teacherIdArray;
+    if (teacherIds) {
+      teacherIdArray = teacherIds.map((id) => {
+        return { Teacher: { connect: { id } } };
+      });
+    }
+
+    let unigroupIdArray;
+    if (unigroupIds) {
+      unigroupIdArray = unigroupIds.map((id) => {
+        return { UniGroup: { connect: { id } } };
+      });
+    }
+
+    let questionIdArray;
+    if (questionIds) {
+      questionIdArray = questionIds.map((id) => {
+        return { id };
+      });
+    }
 
     try {
-      return this.prisma.subject.create({
+      return await this.prisma.subject.create({
         data: {
           ...subjectData,
-          Teachers: {
-            create: teacherIdArray,
-          },
-          Unigroups: {
-            create: unigroupIdArray,
-          },
-          Questions: {
-            connect: questionIdArray,
-          },
+          Teachers: { create: teacherIdArray },
+          Unigroups: { create: unigroupIdArray },
+          Questions: { connect: questionIdArray },
         },
       });
     } catch (error) {
@@ -62,7 +68,19 @@ export class SubjectService {
     });
   }
 
-  remove(id: number) {
+  async remove(id: number) {
+    await this.prisma.subjectOnUnigroups.deleteMany({
+      where: {
+        subjectId: id,
+      },
+    });
+
+    await this.prisma.teacherOnSubjects.deleteMany({
+      where: {
+        subjectId: id,
+      },
+    });
+
     return this.prisma.subject.delete({
       where: {
         id,
