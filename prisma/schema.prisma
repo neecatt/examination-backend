@@ -86,9 +86,3 @@ model UniGroup {
   students           Student[]
   SubjectOnUnigroups SubjectOnUnigroups[]
 }
-
-model Answer {
-  id         Int     @id @default(autoincrement())
-  answer     String
-  is_correct Boolean
-}
