@@ -11,13 +11,13 @@ datasource db {
 }
 
 //One to many with unigroup
-//Later will be added quizid and result
 model Student {
   id         Int      @id @default(autoincrement())
   name       String
   surname    String
   unigroup   UniGroup @relation(fields: [unigroupId], references: [id])
   unigroupId Int
+  Result     Result[]
 }
 
 //many to many with subjects
@@ -51,6 +51,7 @@ model Subject {
   Questions   Question[]
   Teachers    TeacherOnSubjects[]
   Unigroups   SubjectOnUnigroups[]
+  Quiz        Quiz[]
 }
 
 model SubjectOnUnigroups {
@@ -85,4 +86,25 @@ model UniGroup {
   name               String
   students           Student[]
   SubjectOnUnigroups SubjectOnUnigroups[]
+  Quiz               Quiz[]
+}
+
+model Quiz {
+  id        Int      @id @default(autoincrement())
+  subject   Subject  @relation(fields: [subjectId], references: [id])
+  subjectId Int
+  group     UniGroup @relation(fields: [groupId], references: [id])
+  groupId   Int
+  createdAt DateTime @default(now())
+  Result    Result[]
+}
+
+model Result {
+  id        Int      @id @default(autoincrement())
+  student   Student  @relation(fields: [studentId], references: [id])
+  studentId Int
+  quiz      Quiz     @relation(fields: [quizId], references: [id])
+  quizId    Int
+  score     Int
+  createdAt DateTime @default(now())
 }
