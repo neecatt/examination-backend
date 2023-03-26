@@ -9,7 +9,6 @@ export class StudentService {
   constructor(private readonly prisma: PrismaService) {}
   async create(createStudentDto: CreateStudentDto) {
     const { unigroupId, ...studentData } = createStudentDto;
-    // const unigroup = createStudentDto.unigroup;
 
     try {
       const student = await this.prisma.student.create({
