@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
-import { CreateTeacherDto } from 'src/teacher/dto/create-teacher.dto';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
 
@@ -28,15 +27,39 @@ export class StudentService {
     }
   }
 
-  findAll() {
-    return this.prisma.student.findMany();
+  async findAll() {
+    try {
+      return await this.prisma.student.findMany();
+    } catch (error) {
+      throw error;
+    }
   }
 
-  findOne(id: number) {
+  async findOne(id: number) {
     try {
-      return this.prisma.student.findUnique({
+      const student = await this.prisma.student.findUnique({
         where: {
           id,
+        },
+      });
+
+      if (!student) {
+        throw new Error(`Student with id ${id} not found`);
+      }
+      return student;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async update(id: number, updateStudentDto: UpdateStudentDto) {
+    try {
+      return await this.prisma.student.update({
+        where: {
+          id,
+        },
+        data: {
+          ...updateStudentDto,
         },
       });
     } catch (error) {
@@ -44,22 +67,15 @@ export class StudentService {
     }
   }
 
-  update(id: number, updateStudentDto: UpdateStudentDto) {
-    return this.prisma.student.update({
-      where: {
-        id,
-      },
-      data: {
-        ...updateStudentDto,
-      },
-    });
-  }
-
-  remove(id: number) {
-    return this.prisma.student.delete({
-      where: {
-        id,
-      },
-    });
+  async remove(id: number) {
+    try {
+      return await this.prisma.student.delete({
+        where: {
+          id,
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
   }
 }
