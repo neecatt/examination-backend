@@ -24,16 +24,15 @@ export class UnigroupController {
   findAll() {
     return this.unigroupService.findAll();
   }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.unigroupService.findOne(+id);
-  }
-
   @Get('/subjects')
   findAllUnigroupsAndSubjects() {
     console.log('auye');
     return this.unigroupService.findAllSubjectsAndUnigroups();
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.unigroupService.findOne(+id);
   }
 
   @Get(':id/subjects')
