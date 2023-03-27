@@ -13,11 +13,6 @@ export class StudentService {
       const student = await this.prisma.student.create({
         data: {
           ...studentData,
-          unigroup: {
-            connect: {
-              id: unigroupId,
-            },
-          },
         },
       });
 
