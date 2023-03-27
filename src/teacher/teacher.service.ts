@@ -101,6 +101,7 @@ export class TeacherService {
     return await this.findOneByEmail(teacher.email);
   }
 
+  //Update api do not take dublicate data
   async update(id: number, updateTeacherDto: UpdateTeacherDto) {
     try {
       const { subjectIds, unigroupIds, ...teacherData } = updateTeacherDto;
