@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { UnigroupService } from './unigroup.service';
 import { CreateUnigroupDto } from './dto/create-unigroup.dto';
 import { UpdateUnigroupDto } from './dto/update-unigroup.dto';
@@ -22,8 +30,16 @@ export class UnigroupController {
     return this.unigroupService.findOne(+id);
   }
 
+  @Get(':id/subjects')
+  findSubjectsByUnigroupId(@Param('id') id: string) {
+    return this.unigroupService.findSubjectsByUnigroupId(+id);
+  }
+
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUnigroupDto: UpdateUnigroupDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateUnigroupDto: UpdateUnigroupDto,
+  ) {
     return this.unigroupService.update(+id, updateUnigroupDto);
   }
 

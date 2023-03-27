@@ -40,6 +40,25 @@ export class UnigroupService {
     } catch (error) {}
   }
 
+  async findSubjectsByUnigroupId(id: number) {
+    try {
+      const subjects = await this.prisma.subjectOnUnigroups.findMany({
+        where: {
+          unigroupId: id,
+        },
+        include: {
+          Subject: true,
+        },
+      });
+      if (!subjects) {
+        throw new Error(`Subjects for UniGroup with id ${id} not found`);
+      }
+      return subjects;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async update(id: number, updateUnigroupDto: UpdateUnigroupDto) {
     try {
       return await this.prisma.uniGroup.update({
