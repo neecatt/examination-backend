@@ -26,4 +26,7 @@ export class CreateTeacherDto {
 
   @IsOptional()
   subjectIds: number[];
+
+  @IsOptional()
+  unigroupIds: number[];
 }
