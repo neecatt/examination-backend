@@ -41,13 +41,50 @@ export class TeacherService {
   }
 
   async findAll() {
-    return await this.prisma.teacher.findMany();
+    return await this.prisma.teacher.findMany({
+      select: {
+        id: true,
+        name: true,
+        surname: true,
+        password: false,
+        email: true,
+        is_active: true,
+        Subjects: {
+          select: {
+            subjectId: true,
+          },
+        },
+        Unigroups: {
+          select: {
+            unigroupId: true,
+          },
+        },
+      },
+    });
   }
 
   async findOne(id: number) {
     return await this.prisma.teacher.findUnique({
       where: {
         id,
+      },
+      select: {
+        id: true,
+        name: true,
+        surname: true,
+        password: false,
+        email: true,
+        is_active: true,
+        Subjects: {
+          select: {
+            subjectId: true,
+          },
+        },
+        Unigroups: {
+          select: {
+            unigroupId: true,
+          },
+        },
       },
     });
   }
@@ -68,13 +105,19 @@ export class TeacherService {
     try {
       const { subjectIds, unigroupIds, ...teacherData } = updateTeacherDto;
 
-      const subjectIdArray = updateTeacherDto.subjectIds.map((id) => {
-        return { Subject: { connect: { id } } };
-      });
+      const subjectIdArray = subjectIds
+        ? updateTeacherDto.subjectIds.map((id) => {
+            console.log(id);
+            return { Subject: { connect: { id } } };
+          })
+        : [];
 
-      const unigroupIdArray = updateTeacherDto.unigroupIds.map((id) => {
-        return { UniGroup: { connect: { id } } };
-      });
+      const unigroupIdArray = unigroupIds
+        ? updateTeacherDto.unigroupIds.map((id) => {
+            console.log(id);
+            return { UniGroup: { connect: { id } } };
+          })
+        : [];
 
       return this.prisma.teacher.update({
         where: {
@@ -92,8 +135,16 @@ export class TeacherService {
           password: false,
           email: true,
           is_active: true,
-          Subjects: true,
-          Unigroups: true,
+          Subjects: {
+            select: {
+              subjectId: true,
+            },
+          },
+          Unigroups: {
+            select: {
+              unigroupId: true,
+            },
+          },
         },
       });
     } catch (error) {
@@ -102,16 +153,13 @@ export class TeacherService {
   }
 
   async remove(id: number) {
-    const teacher = await this.prisma.teacher.findUnique({
+    await this.prisma.teacherOnSubjects.deleteMany({
       where: {
-        id,
-      },
-      include: {
-        Subjects: true,
+        teacherId: id,
       },
     });
 
-    await this.prisma.teacherOnSubjects.deleteMany({
+    await this.prisma.teacherOnUnigroups.deleteMany({
       where: {
         teacherId: id,
       },
