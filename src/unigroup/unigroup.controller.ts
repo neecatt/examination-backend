@@ -30,6 +30,12 @@ export class UnigroupController {
     return this.unigroupService.findOne(+id);
   }
 
+  @Get('/subjects')
+  findAllUnigroupsAndSubjects() {
+    console.log('auye');
+    return this.unigroupService.findAllSubjectsAndUnigroups();
+  }
+
   @Get(':id/subjects')
   findSubjectsByUnigroupId(@Param('id') id: string) {
     return this.unigroupService.findSubjectsByUnigroupId(+id);
