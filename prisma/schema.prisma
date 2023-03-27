@@ -12,23 +12,22 @@ datasource db {
 
 //One to many with unigroup
 model Student {
-  id         Int      @id @default(autoincrement())
-  name       String
-  surname    String
-  unigroup   UniGroup @relation(fields: [unigroupId], references: [id])
-  unigroupId Int
+  id      Int    @id @default(autoincrement())
+  name    String
+  surname String
   // Result     Result[]
 }
 
 //many to many with subjects
 model Teacher {
-  id        Int                 @id @default(autoincrement())
+  id        Int                  @id @default(autoincrement())
   name      String
   surname   String
-  email     String              @unique
+  email     String               @unique
   password  String
   is_active Boolean
   Subjects  TeacherOnSubjects[]
+  Unigroups TeacherOnUnigroups[]
 }
 
 //mediator table
@@ -39,6 +38,15 @@ model TeacherOnSubjects {
   subjectId Int
 
   @@id([teacherId, subjectId])
+}
+
+model TeacherOnUnigroups {
+  Teacher    Teacher  @relation(fields: [teacherId], references: [id])
+  teacherId  Int
+  UniGroup   UniGroup @relation(fields: [unigroupId], references: [id])
+  unigroupId Int
+
+  @@id([teacherId, unigroupId])
 }
 
 //many to many with teacher
@@ -82,11 +90,11 @@ model Question {
 //one to one with student
 //one to many with subject
 model UniGroup {
-  id                 Int                  @id @default(autoincrement())
-  name               String
-  students           Student[]
-  SubjectOnUnigroups SubjectOnUnigroups[]
+  id       Int                  @id @default(autoincrement())
+  name     String
+  Subjects SubjectOnUnigroups[]
   // Quiz               Quiz[]
+  Teachers TeacherOnUnigroups[]
 }
 
 // model Quiz {
