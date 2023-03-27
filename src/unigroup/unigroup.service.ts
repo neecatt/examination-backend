@@ -20,7 +20,20 @@ export class UnigroupService {
 
   async findAll() {
     try {
-      return await this.prisma.uniGroup.findMany();
+      return await this.prisma.uniGroup.findMany({
+        include: {
+          Teachers: {
+            select: {
+              teacherId: true,
+            },
+          },
+          Subjects: {
+            select: {
+              subjectId: true,
+            },
+          },
+        },
+      });
     } catch (error) {
       throw error;
     }
