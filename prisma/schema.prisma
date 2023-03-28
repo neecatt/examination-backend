@@ -20,56 +20,56 @@ model Student {
 
 //many to many with subjects
 model Teacher {
-  id        Int                  @id @default(autoincrement())
+  id        Int        @id @default(autoincrement())
   name      String
   surname   String
-  email     String               @unique
+  email     String     @unique
   password  String
   is_active Boolean
-  Subjects  TeacherOnSubjects[]
-  Unigroups TeacherOnUnigroups[]
+  Subjects  Subject[]
+  Unigroups UniGroup[]
 }
 
 //mediator table
-model TeacherOnSubjects {
-  Teacher   Teacher @relation(fields: [teacherId], references: [id])
-  teacherId Int
-  Subject   Subject @relation(fields: [subjectId], references: [id])
-  subjectId Int
+// model TeacherOnSubjects {
+//   Teacher   Teacher @relation(fields: [teacherId], references: [id])
+//   teacherId Int
+//   Subject   Subject @relation(fields: [subjectId], references: [id])
+//   subjectId Int
 
-  @@id([teacherId, subjectId])
-}
+//   @@id([teacherId, subjectId])
+// }
 
-model TeacherOnUnigroups {
-  Teacher    Teacher  @relation(fields: [teacherId], references: [id])
-  teacherId  Int
-  UniGroup   UniGroup @relation(fields: [unigroupId], references: [id])
-  unigroupId Int
+// model TeacherOnUnigroups {
+//   Teacher    Teacher  @relation(fields: [teacherId], references: [id])
+//   teacherId  Int
+//   UniGroup   UniGroup @relation(fields: [unigroupId], references: [id])
+//   unigroupId Int
 
-  @@id([teacherId, unigroupId])
-}
+//   @@id([teacherId, unigroupId])
+// }
 
 //many to many with teacher
 //many to one with unigroup
 model Subject {
-  id          Int                  @id @default(autoincrement())
+  id          Int        @id @default(autoincrement())
   name        String
   description String
   credit      Int
   Questions   Question[]
-  Teachers    TeacherOnSubjects[]
-  Unigroups   SubjectOnUnigroups[]
+  Teachers    Teacher[]
+  Unigroups   UniGroup[]
   // Quiz        Quiz[]
 }
 
-model SubjectOnUnigroups {
-  Subject    Subject  @relation(fields: [subjectId], references: [id])
-  subjectId  Int
-  UniGroup   UniGroup @relation(fields: [unigroupId], references: [id])
-  unigroupId Int
+// model SubjectOnUnigroups {
+//   Subject    Subject  @relation(fields: [subjectId], references: [id])
+//   subjectId  Int
+//   UniGroup   UniGroup @relation(fields: [unigroupId], references: [id])
+//   unigroupId Int
 
-  @@id([subjectId, unigroupId])
-}
+//   @@id([subjectId, unigroupId])
+// }
 
 //many to one with subject
 //one to one with answer
@@ -90,11 +90,11 @@ model Question {
 //one to one with student
 //one to many with subject
 model UniGroup {
-  id       Int                  @id @default(autoincrement())
+  id       Int       @id @default(autoincrement())
   name     String
-  Subjects SubjectOnUnigroups[]
+  Subjects Subject[]
   // Quiz               Quiz[]
-  Teachers TeacherOnUnigroups[]
+  Teachers Teacher[]
 }
 
 // model Quiz {
