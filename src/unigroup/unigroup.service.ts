@@ -72,6 +72,21 @@ export class UnigroupService {
         where: {
           id,
         },
+        include: {
+          Teachers: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+          Subjects: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
       });
       if (!unigroup) {
         throw new Error(`Unigroup with id ${id} not found`);
