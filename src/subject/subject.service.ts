@@ -10,26 +10,21 @@ export class SubjectService {
   async create(createSubjectDto: CreateSubjectDto) {
     const { teacherIds, unigroupIds, questionIds, ...subjectData } =
       createSubjectDto;
-    let teacherIdArray;
-    if (teacherIds) {
-      teacherIdArray = teacherIds.map((id) => {
-        return { Teacher: { connect: { id } } };
-      });
-    }
 
-    let unigroupIdArray;
-    if (unigroupIds) {
-      unigroupIdArray = unigroupIds.map((id) => {
-        return { UniGroup: { connect: { id } } };
-      });
-    }
+    const teacherIdArray = teacherIds?.reduce(
+      (acc, id) => [...acc, { Teacher: { connect: { id } } }],
+      [],
+    );
 
-    let questionIdArray;
-    if (questionIds) {
-      questionIdArray = questionIds.map((id) => {
-        return { id };
-      });
-    }
+    const unigroupIdArray = unigroupIds?.reduce(
+      (acc, id) => [...acc, { UniGroup: { connect: { id } } }],
+      [],
+    );
+
+    const questionIdArray = questionIds?.reduce(
+      (acc, id) => [...acc, { id }],
+      [],
+    );
 
     try {
       return await this.prisma.subject.create({
