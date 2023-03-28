@@ -24,11 +24,6 @@ export class TeacherController {
     return this.teacherService.create(createTeacherDto);
   }
 
-  @Get()
-  findAll() {
-    return this.teacherService.findAll();
-  }
-
   @Get('me')
   @UseGuards(JwtAuthGuard)
   getTeacherInfo(@GetTeacher() teacher: Teacher): Teacher {
@@ -38,6 +33,11 @@ export class TeacherController {
   @Get('/:id')
   findOne(@Param('id') id: string) {
     return this.teacherService.findOne(+id);
+  }
+
+  @Get()
+  findAll() {
+    return this.teacherService.findAll();
   }
 
   @Patch(':id')
