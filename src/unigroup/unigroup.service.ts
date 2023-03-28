@@ -8,9 +8,37 @@ export class UnigroupService {
   constructor(private readonly prisma: PrismaService) {}
   async create(createUnigroupDto: CreateUnigroupDto) {
     try {
+      const { teacherIds, subjectIds, ...unigroupData } = createUnigroupDto;
+
+      const teacherIdArray = teacherIds
+        ? teacherIds.map((teacherId) => {
+            return { Teachers: { connect: { teacherId } } };
+          })
+        : [];
+
+      const subjectIdArray = subjectIds
+        ? subjectIds.map((subjectId) => {
+            return subjectId;
+          })
+        : [];
+
       return await this.prisma.uniGroup.create({
         data: {
-          ...createUnigroupDto,
+          ...unigroupData,
+        },
+        select: {
+          id: true,
+          name: true,
+          Teachers: {
+            select: {
+              id: true,
+            },
+          },
+          Subjects: {
+            select: {
+              id: true,
+            },
+          },
         },
       });
     } catch (error) {
@@ -22,16 +50,8 @@ export class UnigroupService {
     try {
       return await this.prisma.uniGroup.findMany({
         include: {
-          Teachers: {
-            select: {
-              teacherId: true,
-            },
-          },
-          Subjects: {
-            select: {
-              subjectId: true,
-            },
-          },
+          Teachers: true,
+          Subjects: true,
         },
       });
     } catch (error) {
@@ -55,12 +75,16 @@ export class UnigroupService {
 
   async findSubjectsByUnigroupId(id: number) {
     try {
-      const subjects = await this.prisma.subjectOnUnigroups.findMany({
+      const subjects = await this.prisma.subject.findMany({
         where: {
-          unigroupId: id,
+          Unigroups: {
+            some: {
+              id,
+            },
+          },
         },
         include: {
-          Subject: true,
+          Unigroups: true,
         },
       });
       if (!subjects) {
@@ -74,10 +98,9 @@ export class UnigroupService {
 
   async findAllSubjectsAndUnigroups() {
     try {
-      const data = await this.prisma.subjectOnUnigroups.findMany({
+      const data = await this.prisma.subject.findMany({
         include: {
-          Subject: true,
-          UniGroup: true,
+          Unigroups: true,
         },
       });
       if (!data) {
@@ -106,18 +129,6 @@ export class UnigroupService {
 
   async remove(id: number) {
     try {
-      await this.prisma.teacherOnUnigroups.deleteMany({
-        where: {
-          unigroupId: id,
-        },
-      });
-
-      await this.prisma.subjectOnUnigroups.deleteMany({
-        where: {
-          unigroupId: id,
-        },
-      });
-
       return await this.prisma.uniGroup.delete({
         where: {
           id,
