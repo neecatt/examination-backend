@@ -30,25 +30,6 @@ model Teacher {
   Unigroups UniGroup[]
 }
 
-//mediator table
-// model TeacherOnSubjects {
-//   Teacher   Teacher @relation(fields: [teacherId], references: [id])
-//   teacherId Int
-//   Subject   Subject @relation(fields: [subjectId], references: [id])
-//   subjectId Int
-
-//   @@id([teacherId, subjectId])
-// }
-
-// model TeacherOnUnigroups {
-//   Teacher    Teacher  @relation(fields: [teacherId], references: [id])
-//   teacherId  Int
-//   UniGroup   UniGroup @relation(fields: [unigroupId], references: [id])
-//   unigroupId Int
-
-//   @@id([teacherId, unigroupId])
-// }
-
 //many to many with teacher
 //many to one with unigroup
 model Subject {
@@ -61,15 +42,6 @@ model Subject {
   Unigroups   UniGroup[]
   // Quiz        Quiz[]
 }
-
-// model SubjectOnUnigroups {
-//   Subject    Subject  @relation(fields: [subjectId], references: [id])
-//   subjectId  Int
-//   UniGroup   UniGroup @relation(fields: [unigroupId], references: [id])
-//   unigroupId Int
-
-//   @@id([subjectId, unigroupId])
-// }
 
 //many to one with subject
 //one to one with answer
