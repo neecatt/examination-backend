@@ -50,7 +50,14 @@ export class UnigroupService {
     try {
       return await this.prisma.uniGroup.findMany({
         include: {
-          Teachers: true,
+          Teachers: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              password: false,
+            },
+          },
           Subjects: true,
         },
       });
