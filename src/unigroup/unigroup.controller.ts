@@ -15,6 +15,11 @@ import { UpdateUnigroupDto } from './dto/update-unigroup.dto';
 export class UnigroupController {
   constructor(private readonly unigroupService: UnigroupService) {}
 
+  @Get('/subjects')
+  findAllUnigroupsAndSubjects() {
+    return this.unigroupService.findAllSubjectsAndUnigroups();
+  }
+
   @Post()
   create(@Body() createUnigroupDto: CreateUnigroupDto) {
     return this.unigroupService.create(createUnigroupDto);
@@ -23,11 +28,6 @@ export class UnigroupController {
   @Get()
   findAll() {
     return this.unigroupService.findAll();
-  }
-  @Get('/subjects')
-  findAllUnigroupsAndSubjects() {
-    console.log('auye');
-    return this.unigroupService.findAllSubjectsAndUnigroups();
   }
 
   @Get(':id')
