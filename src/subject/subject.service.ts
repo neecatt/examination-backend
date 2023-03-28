@@ -69,18 +69,6 @@ export class SubjectService {
   }
 
   async remove(id: number) {
-    await this.prisma.subjectOnUnigroups.deleteMany({
-      where: {
-        subjectId: id,
-      },
-    });
-
-    await this.prisma.teacherOnSubjects.deleteMany({
-      where: {
-        subjectId: id,
-      },
-    });
-
     return this.prisma.subject.delete({
       where: {
         id,
