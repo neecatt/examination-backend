@@ -5,21 +5,18 @@ export class CreateQuestionDto {
   @IsNotEmpty()
   question: string;
 
-  @IsNumber()
-  @IsOptional()
-  answerId: number;
+  @IsString()
+  fileurl: string;
 
   @IsNumber()
-  @IsNotEmpty()
+  @IsOptional()
   subjectId: number;
 
-  @IsString()
+  @IsNumber()
   @IsOptional()
-  options: {
-    OptionA: string;
-    OptionB: string;
-    OptionC: string;
-    OptionD: string;
-    OptionE: string;
-  };
+  groupId: number;
+
+  @IsNumber()
+  @IsOptional()
+  options: number[];
 }

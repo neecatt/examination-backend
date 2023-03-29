@@ -12,6 +12,7 @@ import { AuthService } from './auth/auth.service';
 import { PrismaService } from './prisma.service';
 import { TeacherService } from './teacher/teacher.service';
 import { UnigroupModule } from './unigroup/unigroup.module';
+import { UploadModule } from './upload/upload.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { UnigroupModule } from './unigroup/unigroup.module';
     SubjectModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     UnigroupModule,
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [
