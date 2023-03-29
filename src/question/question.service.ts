@@ -8,16 +8,30 @@ export class QuestionService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createQuestionDto: CreateQuestionDto) {
-    const { subjectId, answerId, ...rest } = createQuestionDto;
-    const question = await this.prisma.question.create({
-      data: {
-        subject: { connect: { id: subjectId } },
-        ...rest,
-      },
-    });
-    return question;
+    try {
+      const { subjectId, groupId, ...rest } = createQuestionDto;
+      const question = await this.prisma.question.create({
+        data: createQuestionDto,
+        select: {
+          id: true,
+          question: true,
+          fileurl: true,
+          subjectId: true,
+          groupId: true,
+          Option: true,
+          createdAt: true,
+        },
+      });
+      //change createdAt timezone to GMT +4
+      const newCreatedAt = (question.createdAt = new Date(
+        question.createdAt.getTime() + 1000 * 60 * 60 * 4,
+      ));
+      return question;
+    } catch (error) {
+      throw error;
+    }
   }
-  // }
+
   findAll() {
     return this.prisma.question.findMany();
   }
