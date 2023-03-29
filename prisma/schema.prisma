@@ -46,27 +46,35 @@ model Subject {
 //many to one with subject
 //one to one with answer
 model Question {
-  id        Int      @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   question  String
-  OptionA   String?
-  OptionB   String?
-  OptionC   String?
-  OptionD   String?
-  OptionE   String?
-  subject   Subject  @relation(fields: [subjectId], references: [id])
-  subjectId Int
-  createdAt DateTime @default(now())
-  answer    String?
+  fileurl   String
+  subject   Subject?  @relation(fields: [subjectId], references: [id])
+  subjectId Int?
+  group     UniGroup? @relation(fields: [groupId], references: [id])
+  groupId   Int?
+  createdAt DateTime  @default(now())
+
+  Option Option[]
+}
+
+model Option {
+  id         Int      @id @default(autoincrement())
+  option     String
+  is_correct Boolean
+  question   Question @relation(fields: [questionId], references: [id])
+  questionId Int
 }
 
 //one to one with student
 //one to many with subject
 model UniGroup {
-  id       Int       @id @default(autoincrement())
-  name     String
-  Subjects Subject[]
+  id        Int        @id @default(autoincrement())
+  name      String
+  Subjects  Subject[]
   // Quiz               Quiz[]
-  Teachers Teacher[]
+  Teachers  Teacher[]
+  Questions Question[]
 }
 
 // model Quiz {
