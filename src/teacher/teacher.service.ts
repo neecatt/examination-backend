@@ -25,8 +25,13 @@ export class TeacherService {
       throw new BadRequestException('Teacher email already exists');
     }
 
+    const { is_active, ...teacherData } = createTeacherDto;
+
     return await this.prisma.teacher.create({
-      data: createTeacherDto,
+      data: {
+        is_active: is_active ? is_active : false,
+        ...teacherData,
+      },
       select: {
         id: true,
         name: true,
@@ -84,7 +89,8 @@ export class TeacherService {
   //Update api do not take dublicate data
   async update(id: number, updateTeacherDto: UpdateTeacherDto) {
     try {
-      const { subjectIds, unigroupIds, ...teacherData } = updateTeacherDto;
+      const { subjectIds, unigroupIds, is_active, ...teacherData } =
+        updateTeacherDto;
 
       const subjectIdArray = subjectIds
         ? updateTeacherDto.subjectIds.map((id) => {
@@ -107,6 +113,7 @@ export class TeacherService {
         data: {
           Subjects: { connect: subjectIdArray },
           Unigroups: { connect: unigroupIdArray },
+          is_active: is_active ? is_active : false,
           ...teacherData,
         },
         select: {
