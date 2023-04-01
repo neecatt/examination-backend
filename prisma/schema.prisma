@@ -48,14 +48,14 @@ model Subject {
 model Question {
   id        Int       @id @default(autoincrement())
   question  String
-  fileurl   String
+  filename  String
+  url       String
   subject   Subject?  @relation(fields: [subjectId], references: [id])
   subjectId Int?
   group     UniGroup? @relation(fields: [groupId], references: [id])
   groupId   Int?
   createdAt DateTime  @default(now())
-
-  Option Option[]
+  Option    Option[]
 }
 
 model Option {
