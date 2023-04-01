@@ -12,7 +12,6 @@ import { AuthService } from './auth/auth.service';
 import { PrismaService } from './prisma.service';
 import { TeacherService } from './teacher/teacher.service';
 import { UnigroupModule } from './unigroup/unigroup.module';
-import { UploadModule } from './upload/upload.module';
 import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
@@ -24,7 +23,6 @@ import { MulterModule } from '@nestjs/platform-express';
     SubjectModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     UnigroupModule,
-    UploadModule,
     MulterModule.register({
       dest: './uploads',
     }),
