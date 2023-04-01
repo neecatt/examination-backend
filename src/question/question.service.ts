@@ -2,6 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
+import contentExtractor from './helper/contentExtractor';
+import fs from 'fs';
+import AdmZip from 'adm-zip';
+import mammoth from 'mammoth';
+import { last } from 'rxjs';
 
 @Injectable()
 export class QuestionService {
@@ -15,7 +20,7 @@ export class QuestionService {
         select: {
           id: true,
           question: true,
-          fileurl: true,
+          filename: true,
           subjectId: true,
           groupId: true,
           Option: true,
@@ -56,5 +61,61 @@ export class QuestionService {
         id,
       },
     });
+  }
+
+  async uploadFile(file: Express.Multer.File) {
+    try {
+      contentExtractor(file)
+        .then(async (lines: string[]) => {
+          console.log(lines);
+          const question = lines[0];
+          await this.prisma.question.create({
+            data: {
+              question: question,
+              filename: file.originalname,
+              url: file.path,
+            },
+          });
+          const latestQuestion = await this.prisma.question.findFirst({
+            orderBy: {
+              id: 'desc',
+            },
+            select: {
+              id: true,
+            },
+          });
+          const questionId = latestQuestion.id;
+          const lastLine = lines[lines.length - 1];
+
+          for (let i = 1; i < lines.length - 1; i++) {
+            if (lines[i] == '') {
+              continue;
+            }
+            if (lines[i].includes(lastLine)) {
+              await this.prisma.option.create({
+                data: {
+                  option: lines[i],
+                  is_correct: true,
+                  questionId: questionId,
+                },
+              });
+              continue;
+            }
+            await this.prisma.option.create({
+              data: {
+                option: lines[i],
+                is_correct: false,
+                questionId: questionId,
+              },
+            });
+          }
+        })
+        .catch((err: Error) => {
+          console.log(err);
+        });
+      return 'Success';
+    } catch (error) {
+      throw error;
+    }
   }
 }
