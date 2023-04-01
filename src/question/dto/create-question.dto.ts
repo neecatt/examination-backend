@@ -6,7 +6,10 @@ export class CreateQuestionDto {
   question: string;
 
   @IsString()
-  fileurl: string;
+  filename: string;
+
+  @IsString()
+  url: string;
 
   @IsNumber()
   @IsOptional()
