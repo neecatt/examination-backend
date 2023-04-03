@@ -3,10 +3,6 @@ import { PrismaService } from 'src/prisma.service';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
 import contentExtractor from './helper/contentExtractor';
-import fs from 'fs';
-import AdmZip from 'adm-zip';
-import mammoth from 'mammoth';
-import { last } from 'rxjs';
 
 @Injectable()
 export class QuestionService {
@@ -23,7 +19,7 @@ export class QuestionService {
           filename: true,
           subjectId: true,
           groupId: true,
-          Option: true,
+          Options: true,
           createdAt: true,
         },
       });
@@ -38,7 +34,16 @@ export class QuestionService {
   }
 
   findAll() {
-    return this.prisma.question.findMany();
+    return this.prisma.question.findMany({
+      select: {
+        id: true,
+        question: true,
+        filename: true,
+        subjectId: true,
+        groupId: true,
+        Options: true,
+      },
+    });
   }
   findOne(id: number) {
     return this.prisma.question.findUnique({
@@ -63,7 +68,11 @@ export class QuestionService {
     });
   }
 
-  async uploadFile(file: Express.Multer.File) {
+  async uploadFile(
+    file: Express.Multer.File,
+    subjectId: number,
+    groupId: number,
+  ) {
     try {
       contentExtractor(file)
         .then(async (lines: string[]) => {
@@ -74,6 +83,16 @@ export class QuestionService {
               question: question,
               filename: file.originalname,
               url: file.path,
+              subjectId: subjectId,
+              groupId: groupId,
+            },
+            select: {
+              id: true,
+              question: true,
+              filename: true,
+              subjectId: true,
+              groupId: true,
+              Options: true,
             },
           });
           const latestQuestion = await this.prisma.question.findFirst({
@@ -113,7 +132,11 @@ export class QuestionService {
         .catch((err: Error) => {
           console.log(err);
         });
-      return 'Success';
+      return {
+        message: 'File uploaded successfully',
+        subjectId,
+        groupId,
+      };
     } catch (error) {
       throw error;
     }

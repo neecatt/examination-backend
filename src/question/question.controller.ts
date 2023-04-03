@@ -9,6 +9,7 @@ import {
   UseInterceptors,
   UploadedFile,
   BadRequestException,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { QuestionService } from './question.service';
 import { CreateQuestionDto } from './dto/create-question.dto';
@@ -50,6 +51,8 @@ export class QuestionController {
   async uploadFile(
     @UploadedFile()
     file: Express.Multer.File,
+    @Body('subjectId', ParseIntPipe) subjectId: number,
+    @Body('groupId', ParseIntPipe) groupId: number,
   ) {
     if (
       file.mimetype !=
@@ -57,35 +60,8 @@ export class QuestionController {
     ) {
       throw new BadRequestException('File type is not supported');
     }
-    const mammoth = require('mammoth');
-    mammoth
-      .extractRawText({ path: file.path })
-      .then(function (result) {
-        const text = result.value; // The raw text
-        //split text by new line
-        const lines = text.split('\n');
-        //if line contains '' then remove it
-        for (let i = 0; i < lines.length + 1; i++) {
-          if (lines[i] == '' || lines[i] == ' ') {
-            lines.splice(i, 1);
-          }
-        }
-        //if last line is empty remove it
-        if (lines[lines.length - 1] == '' || lines[lines.length - 1] == ' ') {
-          lines.pop();
-        }
-        //Iterate over lines and if last line contains in one of them get this line
-        const length = lines.length;
-        const lastLine = lines[length - 1];
-        const messages = result.messages; // Any messages, such as warnings during conversion
-        return lines;
-      })
-      .then((lines) => {})
-      .catch((error) => {
-        console.log(error);
-      });
     // deleteLastLine(file.path);
-    return this.questionService.uploadFile(file);
+    return this.questionService.uploadFile(file, subjectId, groupId);
   }
 
   @Get(':id')
