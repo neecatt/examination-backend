@@ -55,7 +55,7 @@ model Question {
   group     UniGroup? @relation(fields: [groupId], references: [id])
   groupId   Int?
   createdAt DateTime  @default(now())
-  Option    Option[]
+  Options   Option[]
 }
 
 model Option {
