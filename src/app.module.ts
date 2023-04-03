@@ -13,6 +13,7 @@ import { PrismaService } from './prisma.service';
 import { TeacherService } from './teacher/teacher.service';
 import { UnigroupModule } from './unigroup/unigroup.module';
 import { MulterModule } from '@nestjs/platform-express';
+import { OptionModule } from './option/option.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { MulterModule } from '@nestjs/platform-express';
     MulterModule.register({
       dest: './uploads',
     }),
+    OptionModule,
   ],
   controllers: [AppController],
   providers: [
