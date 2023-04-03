@@ -14,7 +14,9 @@ import { UpdateTeacherDto } from './dto/update-teacher.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth-guard';
 import { GetTeacher } from 'src/auth/decorators/get-teacher.decorator';
 import { Teacher } from '@prisma/client';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('teacher')
 @Controller('teacher')
 export class TeacherController {
   constructor(private readonly teacherService: TeacherService) {}

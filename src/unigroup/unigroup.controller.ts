@@ -10,7 +10,9 @@ import {
 import { UnigroupService } from './unigroup.service';
 import { CreateUnigroupDto } from './dto/create-unigroup.dto';
 import { UpdateUnigroupDto } from './dto/update-unigroup.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('unigroup')
 @Controller('unigroup')
 export class UnigroupController {
   constructor(private readonly unigroupService: UnigroupService) {}
