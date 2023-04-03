@@ -18,6 +18,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { diskStorage } from 'multer';
 import mammoth from 'mammoth';
 import { forEach } from 'jszip';
+// import deleteLastLine from './helper/deleteLastLine';
 
 @ApiTags('question')
 @Controller('question')
@@ -56,7 +57,6 @@ export class QuestionController {
     ) {
       throw new BadRequestException('File type is not supported');
     }
-    let content = [];
     const mammoth = require('mammoth');
     mammoth
       .extractRawText({ path: file.path })
@@ -77,21 +77,14 @@ export class QuestionController {
         //Iterate over lines and if last line contains in one of them get this line
         const length = lines.length;
         const lastLine = lines[length - 1];
-        for (let i = 0; i < length - 2; i++) {
-          if (lines[i].includes(lastLine)) {
-          }
-        }
         const messages = result.messages; // Any messages, such as warnings during conversion
         return lines;
       })
-      .then((lines) => {
-        // console.log(lines);
-        content = lines;
-        // console.log(content);
-      })
+      .then((lines) => {})
       .catch((error) => {
         console.log(error);
       });
+    // deleteLastLine(file.path);
     return this.questionService.uploadFile(file);
   }
 
