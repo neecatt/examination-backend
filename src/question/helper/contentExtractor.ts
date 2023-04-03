@@ -1,8 +1,8 @@
-function contentExtractor(file) {
+function contentExtractor(file: Express.Multer.File) {
   const mammoth = require('mammoth');
   return mammoth
     .extractRawText({ path: file.path })
-    .then(function (result) {
+    .then(function (result: any) {
       const text = result.value; // The raw text
       //split text by new line
       const lines = text.split('\n');
@@ -27,7 +27,7 @@ function contentExtractor(file) {
       // console.log(lines);
       return lines;
     })
-    .catch((error) => {
+    .catch((error: Error) => {
       console.log(error);
     });
 }
