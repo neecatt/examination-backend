@@ -18,12 +18,14 @@ export class UnigroupService {
 
       const subjectIdArray = subjectIds
         ? subjectIds.map((subjectId) => {
-            return subjectId;
+            return { Subjects: { connect: { subjectId } } };
           })
         : [];
 
       return await this.prisma.uniGroup.create({
         data: {
+          ...teacherIdArray,
+          ...subjectIdArray,
           ...unigroupData,
         },
         select: {
