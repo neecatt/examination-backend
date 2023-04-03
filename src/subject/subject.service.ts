@@ -34,6 +34,30 @@ export class SubjectService {
           Unigroups: { create: unigroupIdArray },
           Questions: { connect: questionIdArray },
         },
+        select: {
+          id: true,
+          name: true,
+          description: true,
+          Teachers: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+          Unigroups: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          Questions: {
+            select: {
+              id: true,
+              question: true,
+            },
+          },
+        },
       });
     } catch (error) {
       throw error;
@@ -41,7 +65,32 @@ export class SubjectService {
   }
 
   findAll() {
-    return this.prisma.subject.findMany();
+    return this.prisma.subject.findMany({
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        Teachers: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+        Unigroups: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        Questions: {
+          select: {
+            id: true,
+            question: true,
+          },
+        },
+      },
+    });
   }
 
   findOne(id: number) {
