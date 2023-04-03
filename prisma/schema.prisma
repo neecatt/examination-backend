@@ -59,11 +59,11 @@ model Question {
 }
 
 model Option {
-  id         Int      @id @default(autoincrement())
+  id         Int       @id @default(autoincrement())
   option     String
   is_correct Boolean
-  question   Question @relation(fields: [questionId], references: [id])
-  questionId Int
+  question   Question? @relation(fields: [questionId], references: [id])
+  questionId Int?
 }
 
 //one to one with student
