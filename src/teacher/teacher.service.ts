@@ -25,11 +25,10 @@ export class TeacherService {
       throw new BadRequestException('Teacher email already exists');
     }
 
-    const { is_active, ...teacherData } = createTeacherDto;
+    const { ...teacherData } = createTeacherDto;
 
     return await this.prisma.teacher.create({
       data: {
-        is_active: is_active ? is_active : false,
         ...teacherData,
       },
       select: {
