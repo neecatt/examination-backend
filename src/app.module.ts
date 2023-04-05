@@ -14,6 +14,8 @@ import { TeacherService } from './teacher/teacher.service';
 import { UnigroupModule } from './unigroup/unigroup.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { OptionModule } from './option/option.module';
+import { QuizModule } from './quiz/quiz.module';
+import { ResultModule } from './result/result.module';
 
 @Module({
   imports: [
@@ -28,6 +30,8 @@ import { OptionModule } from './option/option.module';
       dest: './uploads',
     }),
     OptionModule,
+    QuizModule,
+    ResultModule,
   ],
   controllers: [AppController],
   providers: [
