@@ -45,15 +45,15 @@ export class QuestionService {
       },
     });
   }
-  findOne(id: number) {
-    return this.prisma.question.findUnique({
+  async findOne(id: number) {
+    return await this.prisma.question.findUnique({
       where: {
         id,
       },
     });
   }
-  update(id: number, updateQuestionDto: UpdateQuestionDto) {
-    return this.prisma.question.update({
+  async update(id: number, updateQuestionDto: UpdateQuestionDto) {
+    return await this.prisma.question.update({
       where: {
         id,
       },
@@ -75,64 +75,68 @@ export class QuestionService {
     groupId: number,
   ) {
     try {
-      contentExtractor(file)
-        .then(async (lines: string[]) => {
-          console.log(lines);
-          const question = lines[0];
-          await this.prisma.question.create({
-            data: {
-              question: question,
-              filename: file.originalname,
-              url: file.path,
-              subjectId: subjectId,
-              groupId: groupId,
-            },
-            select: {
-              id: true,
-              question: true,
-              filename: true,
-              subjectId: true,
-              groupId: true,
-              Options: true,
-            },
+      const lines = await new Promise<string[]>((resolve, reject) => {
+        contentExtractor(file)
+          .then((lines: string[]) => {
+            console.log(lines);
+            resolve(lines);
+          })
+          .catch((err: Error) => {
+            console.log(err);
+            reject(err);
           });
-          const latestQuestion = await this.prisma.question.findFirst({
-            orderBy: {
-              id: 'desc',
-            },
-            select: {
-              id: true,
-            },
-          });
-          const questionId = latestQuestion.id;
-          const lastLine = lines[lines.length - 1];
+      });
+      const question = lines[0];
+      await this.prisma.question.create({
+        data: {
+          question: question,
+          filename: file.originalname,
+          url: file.path,
+          subjectId: subjectId,
+          groupId: groupId,
+        },
+        select: {
+          id: true,
+          question: true,
+          filename: true,
+          subjectId: true,
+          groupId: true,
+          Options: true,
+        },
+      });
+      const latestQuestion = await this.prisma.question.findFirst({
+        orderBy: {
+          id: 'desc',
+        },
+        select: {
+          id: true,
+        },
+      });
+      const questionId = latestQuestion.id;
+      const lastLine = lines[lines.length - 1];
 
-          for (let i = 1; i < lines.length - 1; i++) {
-            if (lines[i] == '') {
-              continue;
-            }
-            if (lines[i].includes(lastLine)) {
-              await this.prisma.option.create({
-                data: {
-                  option: lines[i],
-                  is_correct: true,
-                  questionId: questionId,
-                },
-              });
-              continue;
-            }
-            await this.prisma.option.create({
-              data: {
-                option: lines[i],
-                is_correct: false,
-                questionId: questionId,
-              },
-            });
-          }
-        })
-        .catch((err: Error) => {
-          console.log(err);
+      for (let i = 1; i < lines.length - 1; i++) {
+        if (lines[i] == '') {
+          continue;
+        }
+        if (lines[i].includes(lastLine)) {
+          await this.prisma.option.create({
+            data: {
+              option: lines[i],
+              is_correct: true,
+              questionId: questionId,
+            },
+          });
+          continue;
+        }
+        await this.prisma.option.create({
+          data: {
+            option: lines[i],
+            is_correct: false,
+            questionId: questionId,
+          },
         });
+      }
       return {
         message: 'File uploaded successfully',
         subjectId,
