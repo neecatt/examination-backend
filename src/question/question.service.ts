@@ -33,8 +33,8 @@ export class QuestionService {
     }
   }
 
-  findAll() {
-    return this.prisma.question.findMany({
+  async findAll() {
+    return await this.prisma.question.findMany({
       select: {
         id: true,
         question: true,
@@ -60,12 +60,13 @@ export class QuestionService {
       data: updateQuestionDto,
     });
   }
-  remove(id: number) {
-    return this.prisma.question.delete({
+  async remove(id: number) {
+    const removeQuestion = await this.prisma.question.delete({
       where: {
         id,
       },
     });
+    return 'Question deleted successfully';
   }
 
   async uploadFile(
