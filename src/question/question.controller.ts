@@ -61,7 +61,7 @@ export class QuestionController {
       throw new BadRequestException('File type is not supported');
     }
     // deleteLastLine(file.path);
-    return this.questionService.uploadFile(file, subjectId, groupId);
+    return await this.questionService.uploadFile(file, subjectId, groupId);
   }
 
   @Get(':id')
