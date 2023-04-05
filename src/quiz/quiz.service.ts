@@ -26,17 +26,17 @@ export class QuizService {
     }
   }
 
-  findAll() {
+  async findAll() {
     try {
-      return this.prisma.quiz.findMany();
+      return await this.prisma.quiz.findMany();
     } catch (error) {
       throw error;
     }
   }
 
-  findOne(id: number) {
+  async findOne(id: number) {
     try {
-      return this.prisma.quiz.findUnique({
+      return await this.prisma.quiz.findUnique({
         where: {
           id,
         },
@@ -46,9 +46,9 @@ export class QuizService {
     }
   }
 
-  update(id: number, updateQuizDto: UpdateQuizDto) {
+  async update(id: number, updateQuizDto: UpdateQuizDto) {
     try {
-      return this.prisma.quiz.update({
+      return await this.prisma.quiz.update({
         where: {
           id,
         },
@@ -59,8 +59,8 @@ export class QuizService {
     }
   }
 
-  remove(id: number) {
-    return this.prisma.quiz.delete({
+  async remove(id: number) {
+    return await this.prisma.quiz.delete({
       where: {
         id,
       },
