@@ -19,8 +19,35 @@ export class QuizService {
           Result: { connect: results?.map((id) => ({ id })) },
           createdAt: createdAt,
         },
+        select: {
+          id: true,
+          subject: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          group: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          Questions: {
+            select: {
+              id: true,
+              question: true,
+              Options: {
+                select: {
+                  id: true,
+                  option: true,
+                },
+              },
+            },
+          },
+        },
       });
-      return 'Quiz created successfully';
+      return quiz;
     } catch (error) {
       throw error;
     }
@@ -39,6 +66,29 @@ export class QuizService {
       return await this.prisma.quiz.findUnique({
         where: {
           id,
+        },
+        select: {
+          id: true,
+          Questions: {
+            select: {
+              id: true,
+              question: true,
+              Options: {
+                select: {
+                  id: true,
+                  option: true,
+                  is_correct: true,
+                },
+              },
+            },
+          },
+          Result: {
+            select: {
+              id: true,
+              scoreAchieved: true,
+              scoreTotal: true,
+            },
+          },
         },
       });
     } catch (error) {
