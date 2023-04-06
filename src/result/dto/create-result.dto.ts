@@ -5,7 +5,6 @@ export class CreateResultDto {
   student: string;
 
   @IsNumber()
-  @IsOptional()
   quizId: number;
 
   @IsNumber()
