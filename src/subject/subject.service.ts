@@ -64,8 +64,8 @@ export class SubjectService {
     }
   }
 
-  findAll() {
-    return this.prisma.subject.findMany({
+  async findAll() {
+    return await this.prisma.subject.findMany({
       select: {
         id: true,
         name: true,
@@ -93,16 +93,16 @@ export class SubjectService {
     });
   }
 
-  findOne(id: number) {
-    return this.prisma.subject.findUnique({
+  async findOne(id: number) {
+    return await this.prisma.subject.findUnique({
       where: {
         id,
       },
     });
   }
 
-  update(id: number, updateSubjectDto: UpdateSubjectDto) {
-    return this.prisma.subject.update({
+  async update(id: number, updateSubjectDto: UpdateSubjectDto) {
+    return await this.prisma.subject.update({
       where: {
         id,
       },
@@ -113,7 +113,7 @@ export class SubjectService {
   }
 
   async remove(id: number) {
-    return this.prisma.subject.delete({
+    return await this.prisma.subject.delete({
       where: {
         id,
       },

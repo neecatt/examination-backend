@@ -25,11 +25,10 @@ export class TeacherService {
       throw new BadRequestException('Teacher email already exists');
     }
 
-    const { is_active, ...teacherData } = createTeacherDto;
+    const { ...teacherData } = createTeacherDto;
 
     return await this.prisma.teacher.create({
       data: {
-        is_active: is_active ? is_active : false,
         ...teacherData,
       },
       select: {
@@ -106,7 +105,7 @@ export class TeacherService {
           })
         : [];
 
-      return this.prisma.teacher.update({
+      return await this.prisma.teacher.update({
         where: {
           id,
         },
@@ -141,7 +140,7 @@ export class TeacherService {
   }
 
   async remove(id: number) {
-    return this.prisma.teacher.delete({
+    return await this.prisma.teacher.delete({
       where: {
         id,
       },

@@ -18,40 +18,40 @@ export class UnigroupController {
   constructor(private readonly unigroupService: UnigroupService) {}
 
   @Get('/subjects')
-  findAllUnigroupsAndSubjects() {
-    return this.unigroupService.findAllSubjectsAndUnigroups();
+  async findAllUnigroupsAndSubjects() {
+    return await this.unigroupService.findAllSubjectsAndUnigroups();
   }
 
   @Post()
-  create(@Body() createUnigroupDto: CreateUnigroupDto) {
-    return this.unigroupService.create(createUnigroupDto);
+  async create(@Body() createUnigroupDto: CreateUnigroupDto) {
+    return await this.unigroupService.create(createUnigroupDto);
   }
 
   @Get()
-  findAll() {
-    return this.unigroupService.findAll();
+  async findAll() {
+    return await this.unigroupService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.unigroupService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    return await this.unigroupService.findOne(+id);
   }
 
   @Get(':id/subjects')
-  findSubjectsByUnigroupId(@Param('id') id: string) {
-    return this.unigroupService.findSubjectsByUnigroupId(+id);
+  async findSubjectsByUnigroupId(@Param('id') id: string) {
+    return await this.unigroupService.findSubjectsByUnigroupId(+id);
   }
 
   @Patch(':id')
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateUnigroupDto: UpdateUnigroupDto,
   ) {
-    return this.unigroupService.update(+id, updateUnigroupDto);
+    return await this.unigroupService.update(+id, updateUnigroupDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.unigroupService.remove(+id);
+  async remove(@Param('id') id: string) {
+    return await this.unigroupService.remove(+id);
   }
 }

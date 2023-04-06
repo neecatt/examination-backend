@@ -22,8 +22,8 @@ export class TeacherController {
   constructor(private readonly teacherService: TeacherService) {}
 
   @Post()
-  create(@Body() createTeacherDto: CreateTeacherDto) {
-    return this.teacherService.create(createTeacherDto);
+  async create(@Body() createTeacherDto: CreateTeacherDto) {
+    return await this.teacherService.create(createTeacherDto);
   }
 
   @Get('me')
@@ -33,22 +33,25 @@ export class TeacherController {
   }
 
   @Get('/:id')
-  findOne(@Param('id') id: string) {
-    return this.teacherService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    return await this.teacherService.findOne(+id);
   }
 
   @Get()
-  findAll() {
-    return this.teacherService.findAll();
+  async findAll() {
+    return await this.teacherService.findAll();
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTeacherDto: UpdateTeacherDto) {
-    return this.teacherService.update(+id, updateTeacherDto);
+  async update(
+    @Param('id') id: string,
+    @Body() updateTeacherDto: UpdateTeacherDto,
+  ) {
+    return await this.teacherService.update(+id, updateTeacherDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.teacherService.remove(+id);
+  async remove(@Param('id') id: string) {
+    return await this.teacherService.remove(+id);
   }
 }

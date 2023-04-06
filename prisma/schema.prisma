@@ -12,10 +12,11 @@ datasource db {
 
 //One to many with unigroup
 model Student {
-  id      Int    @id @default(autoincrement())
+  id      Int      @id @default(autoincrement())
   name    String
   surname String
   // Result     Result[]
+  Result  Result[]
 }
 
 //many to many with subjects
@@ -25,7 +26,7 @@ model Teacher {
   surname   String
   email     String     @unique
   password  String
-  is_active Boolean?
+  is_active Boolean?   @default(false)
   Subjects  Subject[]
   Unigroups UniGroup[]
 }
@@ -41,6 +42,7 @@ model Subject {
   Teachers    Teacher[]
   Unigroups   UniGroup[]
   // Quiz        Quiz[]
+  Quiz        Quiz[]
 }
 
 //many to one with subject
@@ -56,6 +58,8 @@ model Question {
   groupId   Int?
   createdAt DateTime  @default(now())
   Options   Option[]
+  Quiz      Quiz?     @relation(fields: [quizId], references: [id])
+  quizId    Int?
 }
 
 model Option {
@@ -72,27 +76,31 @@ model UniGroup {
   id        Int        @id @default(autoincrement())
   name      String
   Subjects  Subject[]
-  // Quiz               Quiz[]
   Teachers  Teacher[]
   Questions Question[]
+  Quiz      Quiz[]
 }
 
-// model Quiz {
-//   id        Int      @id @default(autoincrement())
-//   subject   Subject  @relation(fields: [subjectId], references: [id])
-//   subjectId Int
-//   group     UniGroup @relation(fields: [groupId], references: [id])
-//   groupId   Int
-//   createdAt DateTime @default(now())
-//   Result    Result[]
-// }
+model Quiz {
+  id        Int        @id @default(autoincrement())
+  subject   Subject    @relation(fields: [subjectId], references: [id])
+  subjectId Int
+  group     UniGroup   @relation(fields: [groupId], references: [id])
+  groupId   Int
+  createdAt DateTime   @default(now())
+  Questions Question[]
 
-// model Result {
-//   id        Int      @id @default(autoincrement())
-//   student   Student  @relation(fields: [studentId], references: [id])
-//   studentId Int
-//   quiz      Quiz     @relation(fields: [quizId], references: [id])
-//   quizId    Int
-//   score     Int
-//   createdAt DateTime @default(now())
-// }
+  Result Result[]
+}
+
+model Result {
+  id            Int      @id @default(autoincrement())
+  student       String
+  quiz          Quiz     @relation(fields: [quizId], references: [id])
+  quizId        Int
+  scoreAchieved Int
+  scoreTotal    Int
+  createdAt     DateTime @default(now())
+  Student       Student? @relation(fields: [studentId], references: [id])
+  studentId     Int?
+}

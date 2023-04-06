@@ -27,13 +27,13 @@ export class QuestionController {
   constructor(private readonly questionService: QuestionService) {}
 
   @Post()
-  create(@Body() createQuestionDto: CreateQuestionDto) {
-    return this.questionService.create(createQuestionDto);
+  async create(@Body() createQuestionDto: CreateQuestionDto) {
+    return await this.questionService.create(createQuestionDto);
   }
 
   @Get()
-  findAll() {
-    return this.questionService.findAll();
+  async findAll() {
+    return await this.questionService.findAll();
   }
 
   @Post('upload')
@@ -61,7 +61,7 @@ export class QuestionController {
       throw new BadRequestException('File type is not supported');
     }
     // deleteLastLine(file.path);
-    return this.questionService.uploadFile(file, subjectId, groupId);
+    return await this.questionService.uploadFile(file, subjectId, groupId);
   }
 
   @Get(':id')
