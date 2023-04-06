@@ -6,26 +6,26 @@ import { UpdateOptionDto } from './dto/update-option.dto';
 @Injectable()
 export class OptionService {
   constructor(private readonly prisma: PrismaService) {}
-  create(createOptionDto: CreateOptionDto) {
-    return this.prisma.option.create({
+  async create(createOptionDto: CreateOptionDto) {
+    return await this.prisma.option.create({
       data: createOptionDto,
     });
   }
 
-  findAll() {
-    return this.prisma.option.findMany();
+  async findAll() {
+    return await this.prisma.option.findMany();
   }
 
-  findOne(id: number) {
-    return this.prisma.option.findFirst({
+  async findOne(id: number) {
+    return await this.prisma.option.findFirst({
       where: {
         id,
       },
     });
   }
 
-  update(id: number, updateOptionDto: UpdateOptionDto) {
-    return this.prisma.option.update({
+  async update(id: number, updateOptionDto: UpdateOptionDto) {
+    return await this.prisma.option.update({
       where: {
         id,
       },
@@ -33,8 +33,8 @@ export class OptionService {
     });
   }
 
-  remove(id: number) {
-    return this.prisma.option.delete({
+  async remove(id: number) {
+    return await this.prisma.option.delete({
       where: {
         id,
       },

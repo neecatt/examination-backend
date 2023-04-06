@@ -105,7 +105,7 @@ export class TeacherService {
           })
         : [];
 
-      return this.prisma.teacher.update({
+      return await this.prisma.teacher.update({
         where: {
           id,
         },
@@ -140,7 +140,7 @@ export class TeacherService {
   }
 
   async remove(id: number) {
-    return this.prisma.teacher.delete({
+    return await this.prisma.teacher.delete({
       where: {
         id,
       },
