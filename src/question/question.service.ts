@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
 import contentExtractor from './helper/contentExtractor';
+import { error } from 'console';
 
 @Injectable()
 export class QuestionService {
@@ -87,6 +88,9 @@ export class QuestionService {
           });
       });
       const question = lines[0];
+      if (lines.length > 10) {
+        throw new BadRequestException('Too many options');
+      }
       await this.prisma.question.create({
         data: {
           question: question,
