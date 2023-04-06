@@ -76,7 +76,6 @@ model UniGroup {
   id        Int        @id @default(autoincrement())
   name      String
   Subjects  Subject[]
-  // Quiz               Quiz[]
   Teachers  Teacher[]
   Questions Question[]
   Quiz      Quiz[]
