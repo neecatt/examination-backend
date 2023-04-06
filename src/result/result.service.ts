@@ -6,8 +6,21 @@ import { UpdateResultDto } from './dto/update-result.dto';
 @Injectable()
 export class ResultService {
   constructor(private readonly prisma: PrismaService) {}
-  create(createResultDto: CreateResultDto) {
-    return 'This action adds a new result';
+  async create(createResultDto: CreateResultDto) {
+    try {
+      const { quizId, ...resultData } = createResultDto;
+      const createdAt = new Date();
+      createdAt.setHours(createdAt.getHours() + 4);
+      return await this.prisma.result.create({
+        data: {
+          quiz: { connect: { id: quizId } },
+          createdAt: createdAt,
+          ...resultData,
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
   }
 
   async findAll() {
