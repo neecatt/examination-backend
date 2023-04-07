@@ -15,16 +15,12 @@ async function bootstrap() {
     preflightContinue: false,
   });
 
+  app.setGlobalPrefix('api/v1');
+
   const config = new DocumentBuilder()
     .setTitle('Demo Application')
     .setDescription('Demo API Application')
     .setVersion('v1')
-    .addTag('question')
-    .addTag('subject')
-    .addTag('teacher')
-    .addTag('student')
-    .addTag('unigroup')
-    .addTag('auth')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
