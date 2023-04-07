@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { TeacherService } from './teacher.service';
 import { CreateTeacherDto } from './dto/create-teacher.dto';
@@ -33,8 +34,8 @@ export class TeacherController {
   }
 
   @Get('/:id')
-  async findOne(@Param('id') id: string) {
-    return await this.teacherService.findOne(+id);
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    return await this.teacherService.findOne(id);
   }
 
   @Get()
@@ -44,14 +45,14 @@ export class TeacherController {
 
   @Patch(':id')
   async update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateTeacherDto: UpdateTeacherDto,
   ) {
-    return await this.teacherService.update(+id, updateTeacherDto);
+    return await this.teacherService.update(id, updateTeacherDto);
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string) {
-    return await this.teacherService.remove(+id);
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    return await this.teacherService.remove(id);
   }
 }

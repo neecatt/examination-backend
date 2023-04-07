@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { SubjectService } from './subject.service';
 import { CreateSubjectDto } from './dto/create-subject.dto';
@@ -27,20 +28,20 @@ export class SubjectController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return await this.subjectService.findOne(+id);
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    return await this.subjectService.findOne(id);
   }
 
   @Patch(':id')
   async update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateSubjectDto: UpdateSubjectDto,
   ) {
-    return await this.subjectService.update(+id, updateSubjectDto);
+    return await this.subjectService.update(id, updateSubjectDto);
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string) {
-    return await this.subjectService.remove(+id);
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    return await this.subjectService.remove(id);
   }
 }

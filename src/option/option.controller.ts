@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { OptionService } from './option.service';
 import { CreateOptionDto } from './dto/create-option.dto';
@@ -28,20 +29,20 @@ export class OptionController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return await this.optionService.findOne(+id);
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    return await this.optionService.findOne(id);
   }
 
   @Patch(':id')
   async update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateOptionDto: UpdateOptionDto,
   ) {
-    return await this.optionService.update(+id, updateOptionDto);
+    return await this.optionService.update(id, updateOptionDto);
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string) {
-    return await this.optionService.remove(+id);
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    return await this.optionService.remove(id);
   }
 }

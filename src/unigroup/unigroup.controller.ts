@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { UnigroupService } from './unigroup.service';
 import { CreateUnigroupDto } from './dto/create-unigroup.dto';
@@ -28,20 +29,20 @@ export class UnigroupController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return await this.unigroupService.findOne(+id);
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    return await this.unigroupService.findOne(id);
   }
 
   @Patch(':id')
   async update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateUnigroupDto: UpdateUnigroupDto,
   ) {
-    return await this.unigroupService.update(+id, updateUnigroupDto);
+    return await this.unigroupService.update(id, updateUnigroupDto);
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string) {
-    return await this.unigroupService.remove(+id);
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    return await this.unigroupService.remove(id);
   }
 }

@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { ResultService } from './result.service';
 import { CreateResultDto } from './dto/create-result.dto';
@@ -28,17 +29,20 @@ export class ResultController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.resultService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.resultService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateResultDto: UpdateResultDto) {
-    return this.resultService.update(+id, updateResultDto);
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateResultDto: UpdateResultDto,
+  ) {
+    return this.resultService.update(id, updateResultDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.resultService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.resultService.remove(id);
   }
 }
