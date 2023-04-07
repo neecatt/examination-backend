@@ -1,34 +1,47 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { OptionService } from './option.service';
 import { CreateOptionDto } from './dto/create-option.dto';
 import { UpdateOptionDto } from './dto/update-option.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('option')
 @Controller('option')
 export class OptionController {
   constructor(private readonly optionService: OptionService) {}
 
   @Post()
-  create(@Body() createOptionDto: CreateOptionDto) {
-    return this.optionService.create(createOptionDto);
+  async create(@Body() createOptionDto: CreateOptionDto) {
+    return await this.optionService.create(createOptionDto);
   }
 
   @Get()
-  findAll() {
-    return this.optionService.findAll();
+  async findAll() {
+    return await this.optionService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.optionService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    return await this.optionService.findOne(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateOptionDto: UpdateOptionDto) {
-    return this.optionService.update(+id, updateOptionDto);
+  async update(
+    @Param('id') id: string,
+    @Body() updateOptionDto: UpdateOptionDto,
+  ) {
+    return await this.optionService.update(+id, updateOptionDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.optionService.remove(+id);
+  async remove(@Param('id') id: string) {
+    return await this.optionService.remove(+id);
   }
 }
