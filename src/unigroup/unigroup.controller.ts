@@ -17,11 +17,6 @@ import { ApiTags } from '@nestjs/swagger';
 export class UnigroupController {
   constructor(private readonly unigroupService: UnigroupService) {}
 
-  @Get('/subjects')
-  async findAllUnigroupsAndSubjects() {
-    return await this.unigroupService.findAllSubjectsAndUnigroups();
-  }
-
   @Post()
   async create(@Body() createUnigroupDto: CreateUnigroupDto) {
     return await this.unigroupService.create(createUnigroupDto);
@@ -35,11 +30,6 @@ export class UnigroupController {
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return await this.unigroupService.findOne(+id);
-  }
-
-  @Get(':id/subjects')
-  async findSubjectsByUnigroupId(@Param('id') id: string) {
-    return await this.unigroupService.findSubjectsByUnigroupId(+id);
   }
 
   @Patch(':id')
