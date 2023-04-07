@@ -10,15 +10,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-//One to many with unigroup
-model Student {
-  id      Int      @id @default(autoincrement())
-  name    String
-  surname String
-  // Result     Result[]
-  Result  Result[]
-}
-
 //many to many with subjects
 model Teacher {
   id        Int        @id @default(autoincrement())
@@ -41,7 +32,6 @@ model Subject {
   Questions   Question[]
   Teachers    Teacher[]
   Unigroups   UniGroup[]
-  // Quiz        Quiz[]
   Quiz        Quiz[]
 }
 
@@ -89,8 +79,7 @@ model Quiz {
   groupId   Int
   createdAt DateTime   @default(now())
   Questions Question[]
-
-  Result Result[]
+  Result    Result[]
 }
 
 model Result {
@@ -101,6 +90,4 @@ model Result {
   scoreAchieved Int
   scoreTotal    Int
   createdAt     DateTime @default(now())
-  Student       Student? @relation(fields: [studentId], references: [id])
-  studentId     Int?
 }
