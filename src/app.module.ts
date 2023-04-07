@@ -1,9 +1,6 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { TeacherModule } from './teacher/teacher.module';
-import { StudentModule } from './student/student.module';
 import { QuestionModule } from './question/question.module';
 import { SubjectModule } from './subject/subject.module';
 import { PassportModule } from '@nestjs/passport';
@@ -21,7 +18,6 @@ import { ResultModule } from './result/result.module';
   imports: [
     AuthModule,
     TeacherModule,
-    StudentModule,
     QuestionModule,
     SubjectModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
@@ -33,14 +29,7 @@ import { ResultModule } from './result/result.module';
     QuizModule,
     ResultModule,
   ],
-  controllers: [AppController],
-  providers: [
-    AppService,
-    AuthService,
-    PrismaService,
-    TeacherService,
-    JwtService,
-  ],
+  providers: [AuthService, PrismaService, TeacherService, JwtService],
   exports: [AuthService, PrismaService],
 })
 export class AppModule {}
