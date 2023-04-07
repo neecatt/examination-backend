@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { connect } from 'http2';
 import { PrismaService } from 'src/prisma.service';
 import { CreateSubjectDto } from './dto/create-subject.dto';
 import { UpdateSubjectDto } from './dto/update-subject.dto';

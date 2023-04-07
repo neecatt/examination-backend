@@ -17,9 +17,6 @@ import { UpdateQuestionDto } from './dto/update-question.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags } from '@nestjs/swagger';
 import { diskStorage } from 'multer';
-import mammoth from 'mammoth';
-import { forEach } from 'jszip';
-// import deleteLastLine from './helper/deleteLastLine';
 
 @ApiTags('question')
 @Controller('question')
@@ -60,7 +57,6 @@ export class QuestionController {
     ) {
       throw new BadRequestException('File type is not supported');
     }
-    // deleteLastLine(file.path);
     return await this.questionService.uploadFile(file, subjectId, groupId);
   }
 

@@ -1,11 +1,4 @@
-import { UniGroup } from '@prisma/client';
-import {
-  IsNotEmpty,
-  IsNumber,
-  IsString,
-  ValidateNested,
-} from 'class-validator';
-import { CreateUnigroupDto } from 'src/unigroup/dto/create-unigroup.dto';
+import { IsNumber, IsString } from 'class-validator';
 
 export class CreateStudentDto {
   @IsString()
