@@ -15,13 +15,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   async validate(payload: any) {
     try {
-      const teacher = await this.teacherService.findOneByEmail(payload.email);
-
-      if (!teacher) {
-        throw new BadRequestException('Invalid token');
-      }
-
-      return teacher;
+      return await this.teacherService.findOneByEmail(payload.email);
     } catch (error) {
       throw new Error('Unable to validate token');
     }
