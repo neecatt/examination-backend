@@ -88,7 +88,7 @@ export class QuestionService {
           });
       });
       const question = lines[0];
-      if (lines.length > 10) {
+      if (lines.length > 10 || lines.length < 3) {
         throw new BadRequestException('Too many options');
       }
       await this.prisma.question.create({
