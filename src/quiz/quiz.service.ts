@@ -39,7 +39,12 @@ export class QuizService {
 
   async findAll(): Promise<Quiz[]> {
     try {
-      return await this.prisma.quiz.findMany();
+      return await this.prisma.quiz.findMany({
+        include: {
+          Questions: true,
+          Result: true,
+        },
+      });
     } catch (error) {
       throw error;
     }
