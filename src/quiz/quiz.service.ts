@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { CreateQuizDto } from './dto/create-quiz.dto';
 import { UpdateQuizDto } from './dto/update-quiz.dto';
+import { FindQuizDto } from './dto/find-quiz.dto';
 
 @Injectable()
 export class QuizService {
@@ -17,7 +18,7 @@ export class QuizService {
           group: { connect: { id: groupId } },
           Questions: { connect: questionIds?.map((id) => ({ id })) },
           Result: { connect: results?.map((id) => ({ id })) },
-          createdAt: createdAt,
+          createdAt,
         },
         select: {
           id: true,
@@ -61,39 +62,61 @@ export class QuizService {
     }
   }
 
-  async findOne(id: number) {
-    try {
-      return await this.prisma.quiz.findUnique({
-        where: {
-          id,
+  async findbySubjectandGroup(findQuizDto: FindQuizDto) {
+    const quiz = await this.prisma.quiz.findUnique({
+      where: {
+        subjectId_groupId: {
+          subjectId: findQuizDto.subjectId,
+          groupId: findQuizDto.groupId,
         },
-        select: {
-          id: true,
-          Questions: {
-            select: {
-              id: true,
-              question: true,
-              Options: {
-                select: {
-                  id: true,
-                  option: true,
-                  is_correct: true,
-                },
+      },
+      select: {
+        id: true,
+        Questions: {
+          select: {
+            id: true,
+            question: true,
+            Options: {
+              select: {
+                id: true,
+                option: true,
+                is_correct: true,
               },
             },
           },
-          Result: {
-            select: {
-              id: true,
-              scoreAchieved: true,
-              scoreTotal: true,
-            },
+        },
+        Result: {
+          select: {
+            id: true,
+            scoreAchieved: true,
+            scoreTotal: true,
           },
         },
-      });
-    } catch (error) {
-      throw error;
-    }
+      },
+    });
+
+    if (!quiz) throw new NotFoundException('Quiz not found');
+    return quiz;
+  }
+
+  async findOne(id: number) {
+    const quiz = await this.prisma.quiz.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        Questions: {
+          include: {
+            Options: true,
+          },
+        },
+        Result: true,
+      },
+    });
+
+    if (!quiz) throw new NotFoundException('Quiz not found');
+
+    return quiz;
   }
 
   async update(id: number, updateQuizDto: UpdateQuizDto) {

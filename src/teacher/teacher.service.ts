@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { CreateTeacherDto } from './dto/create-teacher.dto';
 import { UpdateTeacherDto } from './dto/update-teacher.dto';
@@ -74,11 +78,15 @@ export class TeacherService {
   }
 
   async findOneByEmail(email: string) {
-    return await this.prisma.teacher.findUnique({
+    const teacher = await this.prisma.teacher.findUnique({
       where: {
         email,
       },
     });
+
+    if (!teacher) throw new NotFoundException('Teacher not found');
+
+    return teacher;
   }
 
   async getTeacherInfo(teacher: Teacher) {

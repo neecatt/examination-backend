@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { CreateUnigroupDto } from './dto/create-unigroup.dto';
 import { UpdateUnigroupDto } from './dto/update-unigroup.dto';
@@ -49,52 +49,51 @@ export class UnigroupService {
   }
 
   async findAll() {
-    try {
-      return await this.prisma.uniGroup.findMany({
-        include: {
-          Teachers: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-              password: false,
-            },
+    const uniGroups = await this.prisma.uniGroup.findMany({
+      include: {
+        Teachers: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            password: false,
           },
-          Subjects: true,
         },
-      });
-    } catch (error) {
-      throw error;
-    }
+        Subjects: true,
+      },
+    });
+
+    if (uniGroups.length === 0)
+      throw new NotFoundException('Unigroups not found');
+
+    return uniGroups;
   }
 
   async findOne(id: number) {
-    try {
-      const unigroup = await this.prisma.uniGroup.findUnique({
-        where: {
-          id,
-        },
-        include: {
-          Teachers: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-            },
-          },
-          Subjects: {
-            select: {
-              id: true,
-              name: true,
-            },
+    const unigroup = await this.prisma.uniGroup.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        Teachers: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
           },
         },
-      });
-      if (!unigroup) {
-        throw new Error(`Unigroup with id ${id} not found`);
-      }
-      return unigroup;
-    } catch (error) {}
+        Subjects: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+    if (!unigroup) {
+      throw new Error(`Unigroup with id ${id} not found`);
+    }
+    return unigroup;
   }
 
   async update(id: number, updateUnigroupDto: UpdateUnigroupDto) {

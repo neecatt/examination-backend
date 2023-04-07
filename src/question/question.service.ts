@@ -15,17 +15,11 @@ export class QuestionService {
       createdAt.setHours(createdAt.getHours() + 4);
       const question = await this.prisma.question.create({
         data: {
-          createdAt: createdAt,
+          createdAt,
           ...createQuestionDto,
         },
-        select: {
-          id: true,
-          question: true,
-          filename: true,
-          subjectId: true,
-          groupId: true,
+        include: {
           Options: true,
-          createdAt: true,
         },
       });
       return question;
@@ -36,12 +30,7 @@ export class QuestionService {
 
   async findAll() {
     return await this.prisma.question.findMany({
-      select: {
-        id: true,
-        question: true,
-        filename: true,
-        subjectId: true,
-        groupId: true,
+      include: {
         Options: true,
       },
     });
@@ -62,12 +51,16 @@ export class QuestionService {
     });
   }
   async remove(id: number) {
-    const removeQuestion = await this.prisma.question.delete({
-      where: {
-        id,
-      },
-    });
-    return 'Question deleted successfully';
+    try {
+      await this.prisma.question.delete({
+        where: {
+          id,
+        },
+      });
+      return { message: 'Question deleted successfully' };
+    } catch (error) {
+      throw error;
+    }
   }
 
   async uploadFile(
@@ -98,12 +91,7 @@ export class QuestionService {
           subjectId: subjectId,
           groupId: groupId,
         },
-        select: {
-          id: true,
-          question: true,
-          filename: true,
-          subjectId: true,
-          groupId: true,
+        include: {
           Options: true,
         },
       });
