@@ -10,6 +10,7 @@ import {
   UploadedFile,
   BadRequestException,
   ParseIntPipe,
+  NotFoundException,
 } from '@nestjs/common';
 import { QuestionService } from './question.service';
 import { CreateQuestionDto } from './dto/create-question.dto';
@@ -30,7 +31,11 @@ export class QuestionController {
 
   @Get()
   async findAll() {
-    return await this.questionService.findAll();
+    const questions = await this.questionService.findAll();
+    if (!questions) {
+      throw new NotFoundException('No questions found');
+    }
+    return questions;
   }
 
   @Post('upload')

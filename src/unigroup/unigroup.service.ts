@@ -2,11 +2,12 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { CreateUnigroupDto } from './dto/create-unigroup.dto';
 import { UpdateUnigroupDto } from './dto/update-unigroup.dto';
+import { UniGroup } from '@prisma/client';
 
 @Injectable()
 export class UnigroupService {
   constructor(private readonly prisma: PrismaService) {}
-  async create(createUnigroupDto: CreateUnigroupDto) {
+  async create(createUnigroupDto: CreateUnigroupDto): Promise<UniGroup> {
     try {
       const { teacherIds, subjectIds, ...unigroupData } = createUnigroupDto;
 
@@ -28,19 +29,15 @@ export class UnigroupService {
           ...subjectIdArray,
           ...unigroupData,
         },
-        select: {
-          id: true,
-          name: true,
+        include: {
           Teachers: {
             select: {
               id: true,
+              name: true,
+              email: true,
             },
           },
-          Subjects: {
-            select: {
-              id: true,
-            },
-          },
+          Subjects: true,
         },
       });
     } catch (error) {
@@ -48,7 +45,7 @@ export class UnigroupService {
     }
   }
 
-  async findAll() {
+  async findAll(): Promise<UniGroup[]> {
     const uniGroups = await this.prisma.uniGroup.findMany({
       include: {
         Teachers: {
@@ -69,7 +66,7 @@ export class UnigroupService {
     return uniGroups;
   }
 
-  async findOne(id: number) {
+  async findOne(id: number): Promise<UniGroup> {
     const unigroup = await this.prisma.uniGroup.findUnique({
       where: {
         id,
@@ -82,12 +79,7 @@ export class UnigroupService {
             email: true,
           },
         },
-        Subjects: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
+        Subjects: true,
       },
     });
     if (!unigroup) {
@@ -96,7 +88,10 @@ export class UnigroupService {
     return unigroup;
   }
 
-  async update(id: number, updateUnigroupDto: UpdateUnigroupDto) {
+  async update(
+    id: number,
+    updateUnigroupDto: UpdateUnigroupDto,
+  ): Promise<UniGroup> {
     try {
       return await this.prisma.uniGroup.update({
         where: {
@@ -111,7 +106,7 @@ export class UnigroupService {
     }
   }
 
-  async remove(id: number) {
+  async remove(id: number): Promise<UniGroup> {
     try {
       return await this.prisma.uniGroup.delete({
         where: {

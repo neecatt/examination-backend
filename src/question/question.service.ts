@@ -1,14 +1,19 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
 import contentExtractor from './helper/contentExtractor';
+import { Question } from '@prisma/client';
 
 @Injectable()
 export class QuestionService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(createQuestionDto: CreateQuestionDto) {
+  async create(createQuestionDto: CreateQuestionDto): Promise<Question> {
     try {
       const { subjectId, groupId, ...rest } = createQuestionDto;
       const createdAt = new Date();
@@ -28,21 +33,28 @@ export class QuestionService {
     }
   }
 
-  async findAll() {
+  async findAll(): Promise<Question[]> {
     return await this.prisma.question.findMany({
       include: {
         Options: true,
       },
     });
   }
-  async findOne(id: number) {
-    return await this.prisma.question.findUnique({
+  async findOne(id: number): Promise<Question> {
+    const question = await this.prisma.question.findUnique({
       where: {
         id,
       },
     });
+    if (!question) {
+      throw new NotFoundException('Question not found');
+    }
+    return question;
   }
-  async update(id: number, updateQuestionDto: UpdateQuestionDto) {
+  async update(
+    id: number,
+    updateQuestionDto: UpdateQuestionDto,
+  ): Promise<Question> {
     return await this.prisma.question.update({
       where: {
         id,
@@ -50,7 +62,7 @@ export class QuestionService {
       data: updateQuestionDto,
     });
   }
-  async remove(id: number) {
+  async remove(id: number): Promise<{ message: string }> {
     try {
       await this.prisma.question.delete({
         where: {
@@ -67,7 +79,7 @@ export class QuestionService {
     file: Express.Multer.File,
     subjectId: number,
     groupId: number,
-  ) {
+  ): Promise<{ message: string; subjectId: number; groupId: number }> {
     try {
       const lines = await new Promise<string[]>((resolve, reject) => {
         contentExtractor(file)

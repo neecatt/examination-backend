@@ -3,6 +3,7 @@ import { PrismaService } from 'src/prisma.service';
 import { CreateQuizDto } from './dto/create-quiz.dto';
 import { UpdateQuizDto } from './dto/update-quiz.dto';
 import { FindQuizDto } from './dto/find-quiz.dto';
+import { Quiz } from '@prisma/client';
 
 @Injectable()
 export class QuizService {
@@ -20,30 +21,12 @@ export class QuizService {
           Result: { connect: results?.map((id) => ({ id })) },
           createdAt,
         },
-        select: {
-          id: true,
-          subject: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
-          group: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
+        include: {
+          subject: true,
+          group: true,
           Questions: {
-            select: {
-              id: true,
-              question: true,
-              Options: {
-                select: {
-                  id: true,
-                  option: true,
-                },
-              },
+            include: {
+              Options: true,
             },
           },
         },
@@ -54,7 +37,7 @@ export class QuizService {
     }
   }
 
-  async findAll() {
+  async findAll(): Promise<Quiz[]> {
     try {
       return await this.prisma.quiz.findMany();
     } catch (error) {
@@ -62,7 +45,7 @@ export class QuizService {
     }
   }
 
-  async findbySubjectandGroup(findQuizDto: FindQuizDto) {
+  async findbySubjectandGroup(findQuizDto: FindQuizDto): Promise<Quiz> {
     const quiz = await this.prisma.quiz.findUnique({
       where: {
         subjectId_groupId: {
@@ -70,28 +53,13 @@ export class QuizService {
           groupId: findQuizDto.groupId,
         },
       },
-      select: {
-        id: true,
+      include: {
         Questions: {
-          select: {
-            id: true,
-            question: true,
-            Options: {
-              select: {
-                id: true,
-                option: true,
-                is_correct: true,
-              },
-            },
+          include: {
+            Options: true,
           },
         },
-        Result: {
-          select: {
-            id: true,
-            scoreAchieved: true,
-            scoreTotal: true,
-          },
-        },
+        Result: true,
       },
     });
 
@@ -99,7 +67,7 @@ export class QuizService {
     return quiz;
   }
 
-  async findOne(id: number) {
+  async findOne(id: number): Promise<Quiz> {
     const quiz = await this.prisma.quiz.findUnique({
       where: {
         id,
@@ -119,7 +87,7 @@ export class QuizService {
     return quiz;
   }
 
-  async update(id: number, updateQuizDto: UpdateQuizDto) {
+  async update(id: number, updateQuizDto: UpdateQuizDto): Promise<Quiz> {
     try {
       return await this.prisma.quiz.update({
         where: {
@@ -132,11 +100,15 @@ export class QuizService {
     }
   }
 
-  async remove(id: number) {
-    return await this.prisma.quiz.delete({
-      where: {
-        id,
-      },
-    });
+  async remove(id: number): Promise<Quiz> {
+    try {
+      return await this.prisma.quiz.delete({
+        where: {
+          id,
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
   }
 }

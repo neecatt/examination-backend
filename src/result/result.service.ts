@@ -1,12 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { CreateResultDto } from './dto/create-result.dto';
 import { UpdateResultDto } from './dto/update-result.dto';
+import { Result } from '@prisma/client';
 
 @Injectable()
 export class ResultService {
   constructor(private readonly prisma: PrismaService) {}
-  async create(createResultDto: CreateResultDto) {
+  async create(createResultDto: CreateResultDto): Promise<Result> {
     try {
       const { quizId, ...resultData } = createResultDto;
       const createdAt = new Date();
@@ -23,27 +24,27 @@ export class ResultService {
     }
   }
 
-  async findAll() {
+  async findAll(): Promise<Result[]> {
     try {
-      await this.prisma.result.findMany();
+      return await this.prisma.result.findMany();
     } catch (error) {
       throw error;
     }
   }
 
-  async findOne(id: number) {
-    try {
-      return await this.prisma.result.findUnique({
-        where: {
-          id,
-        },
-      });
-    } catch (error) {
-      throw error;
+  async findOne(id: number): Promise<Result> {
+    const result = await this.prisma.result.findUnique({
+      where: {
+        id,
+      },
+    });
+    if (!result) {
+      throw new NotFoundException('Result not found');
     }
+    return result;
   }
 
-  async update(id: number, updateResultDto: UpdateResultDto) {
+  async update(id: number, updateResultDto: UpdateResultDto): Promise<Result> {
     try {
       return await this.prisma.result.update({
         where: {
@@ -56,7 +57,7 @@ export class ResultService {
     }
   }
 
-  async remove(id: number) {
+  async remove(id: number): Promise<Result> {
     try {
       return await this.prisma.result.delete({
         where: {

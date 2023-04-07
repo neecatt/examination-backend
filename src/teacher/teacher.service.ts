@@ -13,10 +13,10 @@ import { Teacher } from '@prisma/client';
 export class TeacherService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createTeacherDto: CreateTeacherDto) {
+  async create(createTeacherDto: CreateTeacherDto): Promise<Teacher> {
     const salt = bcrypt.genSaltSync(10);
 
-    const hash = await bcrypt.hashSync(createTeacherDto.password, salt);
+    const hash = bcrypt.hashSync(createTeacherDto.password, salt);
     createTeacherDto.password = hash;
 
     //throw exception if teacher email already exists
@@ -35,13 +35,7 @@ export class TeacherService {
       data: {
         ...teacherData,
       },
-      select: {
-        id: true,
-        name: true,
-        surname: true,
-        password: false,
-        email: true,
-        is_active: true,
+      include: {
         Subjects: true,
         Unigroups: true,
       },
@@ -77,7 +71,7 @@ export class TeacherService {
     return teacher;
   }
 
-  async findOneByEmail(email: string) {
+  async findOneByEmail(email: string): Promise<Teacher> {
     const teacher = await this.prisma.teacher.findUnique({
       where: {
         email,
@@ -89,12 +83,14 @@ export class TeacherService {
     return teacher;
   }
 
-  async getTeacherInfo(teacher: Teacher) {
+  async getTeacherInfo(teacher: Teacher): Promise<Teacher> {
     return await this.findOneByEmail(teacher.email);
   }
 
-  //Update api do not take dublicate data
-  async update(id: number, updateTeacherDto: UpdateTeacherDto) {
+  async update(
+    id: number,
+    updateTeacherDto: UpdateTeacherDto,
+  ): Promise<Teacher> {
     try {
       const { subjectIds, unigroupIds, is_active, ...teacherData } =
         updateTeacherDto;
@@ -118,26 +114,12 @@ export class TeacherService {
         data: {
           Subjects: { connect: subjectIdArray },
           Unigroups: { connect: unigroupIdArray },
-          is_active: is_active ? is_active : false,
+          is_active: is_active ?? false,
           ...teacherData,
         },
-        select: {
-          id: true,
-          name: true,
-          surname: true,
-          password: false,
-          email: true,
-          is_active: true,
-          Subjects: {
-            select: {
-              id: true,
-            },
-          },
-          Unigroups: {
-            select: {
-              id: true,
-            },
-          },
+        include: {
+          Subjects: true,
+          Unigroups: true,
         },
       });
     } catch (error) {
@@ -145,11 +127,15 @@ export class TeacherService {
     }
   }
 
-  async remove(id: number) {
-    return await this.prisma.teacher.delete({
-      where: {
-        id,
-      },
-    });
+  async remove(id: number): Promise<Teacher> {
+    try {
+      return await this.prisma.teacher.delete({
+        where: {
+          id,
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
   }
 }

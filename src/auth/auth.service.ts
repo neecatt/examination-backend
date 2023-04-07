@@ -11,7 +11,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async login(createAuthDto: CreateAuthDto) {
+  async login(createAuthDto: CreateAuthDto): Promise<{ access_token: string }> {
     try {
       const teacher = await this.teacherService.findOneByEmail(
         createAuthDto.email,
