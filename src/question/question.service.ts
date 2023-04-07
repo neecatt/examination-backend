@@ -79,7 +79,6 @@ export class QuestionService {
       const lines = await new Promise<string[]>((resolve, reject) => {
         contentExtractor(file)
           .then((lines: string[]) => {
-            console.log(lines);
             resolve(lines);
           })
           .catch((err: Error) => {

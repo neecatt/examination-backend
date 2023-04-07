@@ -24,7 +24,6 @@ function contentExtractor(file: Express.Multer.File) {
         }
       }
       const messages = result.messages; // Any messages, such as warnings during conversion
-      // console.log(lines);
       return lines;
     })
     .catch((error: Error) => {

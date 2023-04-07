@@ -93,14 +93,12 @@ export class TeacherService {
 
       const subjectIdArray = subjectIds
         ? updateTeacherDto.subjectIds.map((id) => {
-            console.log(id);
             return { id };
           })
         : [];
 
       const unigroupIdArray = unigroupIds
         ? updateTeacherDto.unigroupIds.map((id) => {
-            console.log(id);
             return { id };
           })
         : [];
