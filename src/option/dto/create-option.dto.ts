@@ -1,7 +1,8 @@
-import { IsBoolean, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateOptionDto {
   @IsString()
+  @IsNotEmpty()
   option: string;
 
   @IsBoolean()
