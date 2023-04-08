@@ -1,4 +1,10 @@
-function contentExtractor(file: Express.Multer.File) {
+/**
+ * *It's a function which extracts the content of the docx file for desired sure.*
+ *
+ * @param {Express.Multer.File} file
+ * @returns {Promise<string[]>}
+ */
+function contentExtractor(file: Express.Multer.File): Promise<string[]> {
   const mammoth = require('mammoth');
   return mammoth
     .extractRawText({ path: file.path })
