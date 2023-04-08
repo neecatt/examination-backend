@@ -124,6 +124,8 @@ export class QuestionService {
     groupId: number,
   ): Promise<{ message: string; subjectId: number; groupId: number }> {
     try {
+      const createdAt = new Date();
+      createdAt.setHours(createdAt.getHours() + 4);
       const lines = await new Promise<string[]>((resolve, reject) => {
         contentExtractor(file)
           .then((lines: string[]) => {
@@ -140,6 +142,7 @@ export class QuestionService {
       }
       await this.prisma.question.create({
         data: {
+          createdAt,
           question: question,
           filename: file.originalname,
           url: file.path,
