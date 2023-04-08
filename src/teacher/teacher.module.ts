@@ -5,8 +5,9 @@ import { PrismaService } from 'src/prisma.service';
 import { PrismaModule } from 'src/prisma.module';
 
 @Module({
-  imports: [PrismaModule],
+  imports: [],
   controllers: [TeacherController],
   providers: [TeacherService, PrismaService],
+  exports: [TeacherService],
 })
 export class TeacherModule {}

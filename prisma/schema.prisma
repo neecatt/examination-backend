@@ -10,85 +10,87 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-//One to many with unigroup
-//Later will be added quizid and result
-model Student {
-  id         Int      @id @default(autoincrement())
-  name       String
-  surname    String
-  unigroup   UniGroup @relation(fields: [unigroupId], references: [id])
-  unigroupId Int
-}
-
 //many to many with subjects
 model Teacher {
-  id        Int                 @id @default(autoincrement())
+  id        Int        @id @default(autoincrement())
   name      String
   surname   String
-  email     String              @unique
+  email     String     @unique
   password  String
-  is_active Boolean
-  Subjects  TeacherOnSubjects[]
-}
-
-//mediator table
-model TeacherOnSubjects {
-  Teacher   Teacher @relation(fields: [teacherId], references: [id])
-  teacherId Int
-  Subject   Subject @relation(fields: [subjectId], references: [id])
-  subjectId Int
-
-  @@id([teacherId, subjectId])
+  is_active Boolean?   @default(false)
+  Subjects  Subject[]
+  Unigroups UniGroup[]
 }
 
 //many to many with teacher
 //many to one with unigroup
 model Subject {
-  id          Int                  @id @default(autoincrement())
+  id          Int        @id @default(autoincrement())
   name        String
   description String
   credit      Int
   Questions   Question[]
-  Teachers    TeacherOnSubjects[]
-  Unigroups   SubjectOnUnigroups[]
-}
-
-model SubjectOnUnigroups {
-  Subject    Subject  @relation(fields: [subjectId], references: [id])
-  subjectId  Int
-  UniGroup   UniGroup @relation(fields: [unigroupId], references: [id])
-  unigroupId Int
-
-  @@id([subjectId, unigroupId])
+  Teachers    Teacher[]
+  Unigroups   UniGroup[]
+  Quiz        Quiz[]
 }
 
 //many to one with subject
 //one to one with answer
 model Question {
-  id        Int      @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   question  String
-  OptionA   String?
-  OptionB   String?
-  OptionC   String?
-  OptionD   String?
-  OptionE   String?
-  subject   Subject  @relation(fields: [subjectId], references: [id])
-  subjectId Int
-  createdAt DateTime @default(now())
-  answer    String?
+  filename  String
+  url       String
+  subject   Subject?  @relation(fields: [subjectId], references: [id])
+  subjectId Int?
+  group     UniGroup? @relation(fields: [groupId], references: [id])
+  groupId   Int?
+  createdAt DateTime  @default(now())
+  Options   Option[]
+  Quiz      Quiz?     @relation(fields: [quizId], references: [id])
+  quizId    Int?
+}
+
+model Option {
+  id         Int       @id @default(autoincrement())
+  option     String
+  is_correct Boolean
+  question   Question? @relation(fields: [questionId], references: [id])
+  questionId Int?
 }
 
 //one to one with student
 //one to many with subject
 model UniGroup {
-  id                 Int                  @id @default(autoincrement())
-  name               String
-  students           Student[]
-  SubjectOnUnigroups SubjectOnUnigroups[]
+  id        Int        @id @default(autoincrement())
+  name      String
+  Subjects  Subject[]
+  Teachers  Teacher[]
+  Questions Question[]
+  Quiz      Quiz[]
 }
 
-model Answer {
-  id         Int     @id @default(autoincrement())
-  answer     String
-  is_correct Boolean
+model Quiz {
+  id        Int        @id @default(autoincrement())
+  subject   Subject    @relation(fields: [subjectId], references: [id])
+  subjectId Int
+  group     UniGroup   @relation(fields: [groupId], references: [id])
+  groupId   Int
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  Questions Question[]
+  Result    Result[]
+
+  @@unique([subjectId, groupId])
+}
+
+model Result {
+  id            Int      @id @default(autoincrement())
+  student       String
+  quiz          Quiz     @relation(fields: [quizId], references: [id])
+  quizId        Int
+  scoreAchieved Int
+  scoreTotal    Int
+  createdAt     DateTime @default(now())
 }

@@ -1,37 +1,60 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { CreateSubjectDto } from './dto/create-subject.dto';
 import { UpdateSubjectDto } from './dto/update-subject.dto';
+import { Subject } from '@prisma/client';
 
+/**
+ *
+ * @export
+ * @class SubjectService
+ * @typedef {SubjectService}
+ */
 @Injectable()
 export class SubjectService {
+  /**
+   *
+   * @constructor
+   * @param {PrismaService} prisma
+   */
   constructor(private readonly prisma: PrismaService) {}
-  create(createSubjectDto: CreateSubjectDto) {
+  /**
+   *
+   * @async
+   * @param {CreateSubjectDto} createSubjectDto
+   * @returns {Promise<Subject>}
+   */
+  async create(createSubjectDto: CreateSubjectDto): Promise<Subject> {
     const { teacherIds, unigroupIds, questionIds, ...subjectData } =
       createSubjectDto;
-    const teacherIdArray = createSubjectDto.teacherIds.map((id) => {
-      return { Teacher: { connect: { id } } };
-    });
-    const unigroupIdArray = createSubjectDto.unigroupIds.map((id) => {
-      return { UniGroup: { connect: { id } } };
-    });
-    const questionIdArray = createSubjectDto.questionIds.map((id) => {
-      return { id };
-    });
+
+    const teacherIdArray = teacherIds?.reduce(
+      (acc, id) => [...acc, { Teacher: { connect: { id } } }],
+      [],
+    );
+
+    const unigroupIdArray = unigroupIds?.reduce(
+      (acc, id) => [...acc, { UniGroup: { connect: { id } } }],
+      [],
+    );
+
+    const questionIdArray = questionIds?.reduce(
+      (acc, id) => [...acc, { id }],
+      [],
+    );
 
     try {
-      return this.prisma.subject.create({
+      return await this.prisma.subject.create({
         data: {
           ...subjectData,
-          Teachers: {
-            create: teacherIdArray,
-          },
-          Unigroups: {
-            create: unigroupIdArray,
-          },
-          Questions: {
-            connect: questionIdArray,
-          },
+          Teachers: { create: teacherIdArray },
+          Unigroups: { create: unigroupIdArray },
+          Questions: { connect: questionIdArray },
+        },
+        include: {
+          Teachers: true,
+          Unigroups: true,
+          Questions: true,
         },
       });
     } catch (error) {
@@ -39,34 +62,89 @@ export class SubjectService {
     }
   }
 
-  findAll() {
-    return this.prisma.subject.findMany();
+  /**
+   *
+   * @async
+   * @returns {Promise<Subject[]>}
+   */
+  async findAll(): Promise<Subject[]> {
+    try {
+      return await this.prisma.subject.findMany({
+        include: {
+          Teachers: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+          Unigroups: true,
+          Questions: true,
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
   }
 
-  findOne(id: number) {
-    return this.prisma.subject.findUnique({
+  /**
+   *
+   * @async
+   * @param {number} id
+   * @returns {Promise<Subject>}
+   */
+  async findOne(id: number): Promise<Subject> {
+    const subject = await this.prisma.subject.findUnique({
       where: {
         id,
       },
     });
+    if (!subject) {
+      throw new NotFoundException('Subject not found');
+    }
+    return subject;
   }
 
-  update(id: number, updateSubjectDto: UpdateSubjectDto) {
-    return this.prisma.subject.update({
-      where: {
-        id,
-      },
-      data: {
-        ...updateSubjectDto,
-      },
-    });
+  /**
+   *
+   * @async
+   * @param {number} id
+   * @param {UpdateSubjectDto} updateSubjectDto
+   * @returns {Promise<Subject>}
+   */
+  async update(
+    id: number,
+    updateSubjectDto: UpdateSubjectDto,
+  ): Promise<Subject> {
+    try {
+      return await this.prisma.subject.update({
+        where: {
+          id,
+        },
+        data: {
+          ...updateSubjectDto,
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
   }
 
-  remove(id: number) {
-    return this.prisma.subject.delete({
-      where: {
-        id,
-      },
-    });
+  /**
+   *
+   * @async
+   * @param {number} id
+   * @returns {Promise<Subject>}
+   */
+  async remove(id: number): Promise<Subject> {
+    try {
+      return await this.prisma.subject.delete({
+        where: {
+          id,
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
   }
 }

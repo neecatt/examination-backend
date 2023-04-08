@@ -5,10 +5,11 @@ import { JwtStrategy } from './jwt.strategy';
 import { JwtModule } from '@nestjs/jwt';
 import { TeacherService } from 'src/teacher/teacher.service';
 import { PrismaService } from 'src/prisma.service';
+import { TeacherModule } from 'src/teacher/teacher.module';
 
 @Module({
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, TeacherService, PrismaService],
+  providers: [AuthService, JwtStrategy, PrismaService],
   exports: [AuthService],
   imports: [
     JwtModule.registerAsync({
@@ -17,7 +18,7 @@ import { PrismaService } from 'src/prisma.service';
         signOptions: { expiresIn: '1d' },
       }),
     }),
-    AuthModule,
+    TeacherModule,
   ],
 })
 export class AuthModule {}
