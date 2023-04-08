@@ -11,8 +11,19 @@ import { Question } from '@prisma/client';
 
 @Injectable()
 export class QuestionService {
+  /**
+   * Creates an instance of QuestionService.
+   * @constructor
+   * @param {PrismaService} prisma
+   */
   constructor(private readonly prisma: PrismaService) {}
 
+  /**
+   *
+   * @async
+   * @param {CreateQuestionDto} createQuestionDto
+   * @returns {Promise<Question>}
+   */
   async create(createQuestionDto: CreateQuestionDto): Promise<Question> {
     try {
       const { subjectId, groupId, ...rest } = createQuestionDto;
@@ -33,6 +44,11 @@ export class QuestionService {
     }
   }
 
+  /**
+   *
+   * @async
+   * @returns {Promise<Question[]>}
+   */
   async findAll(): Promise<Question[]> {
     return await this.prisma.question.findMany({
       include: {
@@ -40,6 +56,12 @@ export class QuestionService {
       },
     });
   }
+
+  /**
+   * @async
+   * @param {number} id
+   * @returns {Promise<Question>}
+   */
   async findOne(id: number): Promise<Question> {
     const question = await this.prisma.question.findUnique({
       where: {
@@ -51,6 +73,13 @@ export class QuestionService {
     }
     return question;
   }
+
+  /**
+   * @async
+   * @param {number} id
+   * @param {UpdateQuestionDto} updateQuestionDto
+   * @returns {Promise<Question>}
+   */
   async update(
     id: number,
     updateQuestionDto: UpdateQuestionDto,
@@ -62,6 +91,12 @@ export class QuestionService {
       data: updateQuestionDto,
     });
   }
+
+  /**
+   * @async
+   * @param {number} id
+   * @returns {Promise<{ message: string }>}
+   */
   async remove(id: number): Promise<{ message: string }> {
     try {
       await this.prisma.question.delete({
@@ -75,6 +110,14 @@ export class QuestionService {
     }
   }
 
+  /**
+   *
+   * @async
+   * @param {Express.Multer.File} file
+   * @param {number} subjectId
+   * @param {number} groupId
+   * @returns {Promise<{ message: string; subjectId: number; groupId: number }>}
+   */
   async uploadFile(
     file: Express.Multer.File,
     subjectId: number,

@@ -5,10 +5,32 @@ import { UpdateQuizDto } from './dto/update-quiz.dto';
 import { FindQuizDto } from './dto/find-quiz.dto';
 import { Quiz } from '@prisma/client';
 
+/**
+ *
+ 
+ *
+ * @export
+ * @class QuizService
+ * @typedef {QuizService}
+ */
 @Injectable()
 export class QuizService {
+  /**
+   * Creates an instance of QuizService.
+   
+   *
+   * @constructor
+   * @param {PrismaService} prisma
+   */
   constructor(private readonly prisma: PrismaService) {}
-  async create(createQuizDto: CreateQuizDto) {
+  /**
+   *
+   *
+   * @async
+   * @param {CreateQuizDto} createQuizDto
+   * @returns {Promise<Quiz>}
+   */
+  async create(createQuizDto: CreateQuizDto): Promise<Quiz> {
     const { questionIds, results, subjectId, groupId } = createQuizDto;
     try {
       const createdAt = new Date();
@@ -37,6 +59,13 @@ export class QuizService {
     }
   }
 
+  /**
+   *
+   
+   *
+   * @async
+   * @returns {Promise<Quiz[]>}
+   */
   async findAll(): Promise<Quiz[]> {
     try {
       return await this.prisma.quiz.findMany({
@@ -50,6 +79,14 @@ export class QuizService {
     }
   }
 
+  /**
+   *
+   
+   *
+   * @async
+   * @param {FindQuizDto} findQuizDto
+   * @returns {Promise<Quiz>}
+   */
   async findbySubjectandGroup(findQuizDto: FindQuizDto): Promise<Quiz> {
     const quiz = await this.prisma.quiz.findUnique({
       where: {
@@ -72,6 +109,14 @@ export class QuizService {
     return quiz;
   }
 
+  /**
+   *
+   
+   *
+   * @async
+   * @param {number} id
+   * @returns {Promise<Quiz>}
+   */
   async findOne(id: number): Promise<Quiz> {
     const quiz = await this.prisma.quiz.findUnique({
       where: {
@@ -92,6 +137,15 @@ export class QuizService {
     return quiz;
   }
 
+  /**
+   *
+   
+   *
+   * @async
+   * @param {number} id
+   * @param {UpdateQuizDto} updateQuizDto
+   * @returns {Promise<Quiz>}
+   */
   async update(id: number, updateQuizDto: UpdateQuizDto): Promise<Quiz> {
     try {
       return await this.prisma.quiz.update({
@@ -105,6 +159,14 @@ export class QuizService {
     }
   }
 
+  /**
+   *
+   
+   *
+   * @async
+   * @param {number} id
+   * @returns {Promise<Quiz>}
+   */
   async remove(id: number): Promise<Quiz> {
     try {
       return await this.prisma.quiz.delete({

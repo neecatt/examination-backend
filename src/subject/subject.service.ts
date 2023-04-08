@@ -4,9 +4,26 @@ import { CreateSubjectDto } from './dto/create-subject.dto';
 import { UpdateSubjectDto } from './dto/update-subject.dto';
 import { Subject } from '@prisma/client';
 
+/**
+ *
+ * @export
+ * @class SubjectService
+ * @typedef {SubjectService}
+ */
 @Injectable()
 export class SubjectService {
+  /**
+   *
+   * @constructor
+   * @param {PrismaService} prisma
+   */
   constructor(private readonly prisma: PrismaService) {}
+  /**
+   *
+   * @async
+   * @param {CreateSubjectDto} createSubjectDto
+   * @returns {Promise<Subject>}
+   */
   async create(createSubjectDto: CreateSubjectDto): Promise<Subject> {
     const { teacherIds, unigroupIds, questionIds, ...subjectData } =
       createSubjectDto;
@@ -45,6 +62,11 @@ export class SubjectService {
     }
   }
 
+  /**
+   *
+   * @async
+   * @returns {Promise<Subject[]>}
+   */
   async findAll(): Promise<Subject[]> {
     try {
       return await this.prisma.subject.findMany({
@@ -65,6 +87,12 @@ export class SubjectService {
     }
   }
 
+  /**
+   *
+   * @async
+   * @param {number} id
+   * @returns {Promise<Subject>}
+   */
   async findOne(id: number): Promise<Subject> {
     const subject = await this.prisma.subject.findUnique({
       where: {
@@ -77,6 +105,13 @@ export class SubjectService {
     return subject;
   }
 
+  /**
+   *
+   * @async
+   * @param {number} id
+   * @param {UpdateSubjectDto} updateSubjectDto
+   * @returns {Promise<Subject>}
+   */
   async update(
     id: number,
     updateSubjectDto: UpdateSubjectDto,
@@ -95,6 +130,12 @@ export class SubjectService {
     }
   }
 
+  /**
+   *
+   * @async
+   * @param {number} id
+   * @returns {Promise<Subject>}
+   */
   async remove(id: number): Promise<Subject> {
     try {
       return await this.prisma.subject.delete({

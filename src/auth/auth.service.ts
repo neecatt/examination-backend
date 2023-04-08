@@ -4,13 +4,33 @@ import { CreateAuthDto } from './dto/create-auth.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 
+/**
+ *
+ * @export
+ * @class AuthService
+ * @typedef {AuthService}
+ */
 @Injectable()
 export class AuthService {
+  /**
+   * Creates an instance of AuthService.
+   *
+   * @constructor
+   * @param {TeacherService} teacherService
+   * @param {JwtService} jwtService
+   */
+
   constructor(
     private readonly teacherService: TeacherService,
     private readonly jwtService: JwtService,
   ) {}
 
+  /**
+   *
+   * @async
+   * @param {CreateAuthDto} createAuthDto
+   * @returns {Promise<{ access_token: string }>}
+   */
   async login(createAuthDto: CreateAuthDto): Promise<{ access_token: string }> {
     try {
       const teacher = await this.teacherService.findOneByEmail(

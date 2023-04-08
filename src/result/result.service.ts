@@ -4,9 +4,29 @@ import { CreateResultDto } from './dto/create-result.dto';
 import { UpdateResultDto } from './dto/update-result.dto';
 import { Result } from '@prisma/client';
 
+/**
+ * Description placeholder
+ *
+ * @export
+ * @class ResultService
+ * @typedef {ResultService}
+ */
 @Injectable()
 export class ResultService {
+  /**
+   * Creates an instance of ResultService.
+   *
+   * @constructor
+   * @param {PrismaService} prisma
+   */
   constructor(private readonly prisma: PrismaService) {}
+
+  /**
+   *
+   * @async
+   * @param {CreateResultDto} createResultDto
+   * @returns {Promise<Result>}
+   */
   async create(createResultDto: CreateResultDto): Promise<Result> {
     try {
       const { quizId, ...resultData } = createResultDto;
@@ -24,6 +44,11 @@ export class ResultService {
     }
   }
 
+  /**
+   *
+   * @async
+   * @returns {Promise<Result[]>}
+   */
   async findAll(): Promise<Result[]> {
     try {
       return await this.prisma.result.findMany();
@@ -32,6 +57,12 @@ export class ResultService {
     }
   }
 
+  /**
+   *
+   * @async
+   * @param {number} id
+   * @returns {Promise<Result>}
+   */
   async findOne(id: number): Promise<Result> {
     const result = await this.prisma.result.findUnique({
       where: {
@@ -44,6 +75,13 @@ export class ResultService {
     return result;
   }
 
+  /**
+   *
+   * @async
+   * @param {number} id
+   * @param {UpdateResultDto} updateResultDto
+   * @returns {Promise<Result>}
+   */
   async update(id: number, updateResultDto: UpdateResultDto): Promise<Result> {
     try {
       return await this.prisma.result.update({
@@ -57,6 +95,12 @@ export class ResultService {
     }
   }
 
+  /**
+   *
+   * @async
+   * @param {number} id
+   * @returns {Promise<Result>}
+   */
   async remove(id: number): Promise<Result> {
     try {
       return await this.prisma.result.delete({

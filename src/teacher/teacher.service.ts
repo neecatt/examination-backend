@@ -9,10 +9,28 @@ import { UpdateTeacherDto } from './dto/update-teacher.dto';
 import * as bcrypt from 'bcrypt';
 import { Teacher } from '@prisma/client';
 
+/**
+ *
+ * @export
+ * @class TeacherService
+ * @typedef {TeacherService}
+ */
 @Injectable()
 export class TeacherService {
+  /**
+   * Creates an instance of TeacherService.
+   *
+   * @constructor
+   * @param {PrismaService} prisma
+   */
   constructor(private prisma: PrismaService) {}
 
+  /**
+   *
+   * @async
+   * @param {CreateTeacherDto} createTeacherDto
+   * @returns {Promise<Teacher>}
+   */
   async create(createTeacherDto: CreateTeacherDto): Promise<Teacher> {
     const salt = bcrypt.genSaltSync(10);
 
@@ -42,6 +60,11 @@ export class TeacherService {
     });
   }
 
+  /**
+   *
+   * @async
+   * @returns {unknown}
+   */
   async findAll() {
     return await this.prisma.teacher.findMany({
       select: {
@@ -57,6 +80,12 @@ export class TeacherService {
     });
   }
 
+  /**
+   *
+   * @async
+   * @param {number} id
+   * @returns {Promise<Teacher>}
+   */
   async findOne(id: number): Promise<Teacher> {
     const teacher = await this.prisma.teacher.findUnique({
       where: {
@@ -71,6 +100,12 @@ export class TeacherService {
     return teacher;
   }
 
+  /**
+   *
+   * @async
+   * @param {string} email
+   * @returns {Promise<Teacher>}
+   */
   async findOneByEmail(email: string): Promise<Teacher> {
     const teacher = await this.prisma.teacher.findUnique({
       where: {
@@ -83,10 +118,23 @@ export class TeacherService {
     return teacher;
   }
 
+  /**
+   *
+   * @async
+   * @param {Teacher} teacher
+   * @returns {Promise<Teacher>}
+   */
   async getTeacherInfo(teacher: Teacher): Promise<Teacher> {
     return await this.findOneByEmail(teacher.email);
   }
 
+  /**
+   *
+   * @async
+   * @param {number} id
+   * @param {UpdateTeacherDto} updateTeacherDto
+   * @returns {Promise<Teacher>}
+   */
   async update(
     id: number,
     updateTeacherDto: UpdateTeacherDto,
@@ -127,6 +175,12 @@ export class TeacherService {
     }
   }
 
+  /**
+   *
+   * @async
+   * @param {number} id
+   * @returns {Promise<Teacher>}
+   */
   async remove(id: number): Promise<Teacher> {
     try {
       return await this.prisma.teacher.delete({
