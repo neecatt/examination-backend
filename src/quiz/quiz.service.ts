@@ -148,11 +148,21 @@ export class QuizService {
    */
   async update(id: number, updateQuizDto: UpdateQuizDto): Promise<Quiz> {
     try {
+      const { questionIds, results } = updateQuizDto;
+      const updatedAt = new Date();
+      updatedAt.setHours(updatedAt.getHours() + 4);
       return await this.prisma.quiz.update({
         where: {
           id,
         },
-        data: updateQuizDto,
+        data: {
+          updatedAt,
+          Questions: { connect: questionIds?.map((id) => ({ id })) },
+          Result: { connect: results?.map((id) => ({ id })) },
+        },
+        include: {
+          Questions: true,
+        },
       });
     } catch (error) {
       throw error;
